@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Avenor</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-page {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 440px;
+            padding: 48px 40px;
+            border-radius: 28px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 26px 75px rgba(0,0,0,0.42);
+        }
+
+        .auth-container .logo {
+            display: block;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+        .auth-container h1 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .auth-container .subtitle {
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 1rem;
+            transition: 0.25s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--maroon-light);
+            box-shadow: 0 0 0 3px rgba(143,29,45,0.2);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--maroon-light), var(--maroon));
+            color: white;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.25s ease;
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(143,29,45,0.4);
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--muted);
+        }
+
+        .auth-links a {
+            color: var(--maroon-light);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+
+        .password-requirements {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        @media (max-width: 576px) {
+            .auth-container {
+                padding: 32px 20px;
+            }
+
+            .auth-container h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    <div class="page-glow"></div>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">AVENOR</a>
+
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="search-box">
+            <select id="searchCategory" aria-label="Search category">
+                <option value="all">All</option>
+                <option value="fashion">Fashion</option>
+                <option value="mobiles">Mobiles</option>
+                <option value="laptops">Laptops</option>
+                <option value="beauty">Beauty</option>
+                <option value="gaming">Gaming</option>
+                <option value="luxury">Luxury</option>
+                <option value="electronics">Electronics</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Search products, brands, categories">
+            <button type="button" id="searchBtn">Search</button>
+        </div>
+
+        <div class="nav-actions">
+            <a href="login.html" class="nav-pill">Login</a>
+            <a href="wishlist.html" class="nav-pill">Wishlist <span id="wishlistCount">0</span></a>
+            <a href="orders.html" class="nav-pill">Orders</a>
+            <a href="cart.html" class="cart-btn">Cart <span id="cartCount">0</span></a>
+        </div>
+
+        <div class="nav-links" id="navLinks">
+            <a href="index.html#fashion">Fashion</a>
+            <a href="index.html#electronics">Electronics</a>
+            <a href="index.html#beauty">Beauty</a>
+            <a href="index.html#gaming">Gaming</a>
+            <a href="index.html#luxury">Luxury</a>
+            <a href="index.html#ai">AI Assistant</a>
+        </div>
+    </nav>
+
+    <div class="auth-page">
+        <div class="auth-container">
+            <a href="index.html" class="logo">AVENOR</a>
+            <h1>Create Account</h1>
+            <p class="subtitle">Join the AI-powered marketplace</p>
+
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Create a strong password" required>
+                    <div class="password-requirements">Minimum 8 characters, 1 uppercase, 1 number</div>
+                </div>
+                <button type="submit" class="auth-btn">Create Account</button>
+            </form>
+
+            <div class="auth-links">
+                Already have an account? <a href="login.html">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        async function handleSignup(e) {
+            e.preventDefault();
+            const inputs = e.target.querySelectorAll('input');
+            const name = inputs[0].value.trim();
+            const email = inputs[1].value.trim();
+            const password = inputs[2].value;
+
+            try {
+                const response = await fetch('http://localhost:5001/api/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert('✅ Account created successfully! Redirecting to login...');
+                    window.location.href = 'login.html';
+                } else {
+                    alert('❌ Registration failed: ' + data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('❌ Server offline. Account created locally (Demo Mode).');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | Avenor</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .cart-page {
+            padding: 40px 6vw 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .cart-page h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .cart-page .subtitle {
+            color: var(--muted);
+            margin-bottom: 40px;
+        }
+
+        .cart-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+        }
+
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 100px 1fr auto;
+            gap: 20px;
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.03);
+            align-items: center;
+            transition: 0.25s ease;
+        }
+
+        .cart-item:hover {
+            border-color: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .cart-item-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cart-item-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .cart-item-info .category {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .cart-item-info .price {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--maroon-light);
+            margin-top: 8px;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .cart-item-actions .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cart-item-actions .quantity-control button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: 0.2s ease;
+        }
+
+        .cart-item-actions .quantity-control button:hover {
+            background: var(--maroon-light);
+        }
+
+        .cart-item-actions .quantity-control span {
+            font-weight: 700;
+            font-size: 1.1rem;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .cart-item-actions .remove-btn {
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s ease;
+            padding: 4px 12px;
+            border-radius: 999px;
+        }
+
+        .cart-item-actions .remove-btn:hover {
+            color: #ff4444;
+            background: rgba(255,68,68,0.1);
+        }
+
+        .cart-summary {
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.03);
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .cart-summary h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .cart-summary .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .cart-summary .summary-row.total {
+            font-size: 1.3rem;
+            font-weight: 800;
+            border-bottom: none;
+            padding-top: 20px;
+        }
+
+        .cart-summary .summary-row.total .amount {
+            color: var(--maroon-light);
+            font-size: 1.6rem;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--maroon-light), var(--maroon));
+            color: white;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.25s ease;
+            margin-top: 20px;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(143,29,45,0.4);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-cart .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-cart p {
+            color: var(--muted);
+            margin-bottom: 30px;
+        }
+
+        .empty-cart .shop-btn {
+            padding: 14px 40px;
+            border-radius: 999px;
+            background: var(--maroon-light);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-block;
+            transition: 0.25s ease;
+        }
+
+        .empty-cart .shop-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(143,29,45,0.4);
+        }
+
+        @media (max-width: 768px) {
+            .cart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-item {
+                grid-template-columns: 80px 1fr;
+                gap: 12px;
+            }
+
+            .cart-item-image {
+                width: 80px;
+                height: 80px;
+            }
+
+            .cart-item-actions {
+                grid-column: 1 / -1;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding-top: 10px;
+                border-top: 1px solid rgba(255,255,255,0.05);
+            }
+
+            .cart-page h1 {
+                font-size: 2rem;
+            }
+
+            .cart-summary {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    <div class="page-glow"></div>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">AVENOR</a>
+
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="search-box">
+            <select id="searchCategory" aria-label="Search category">
+                <option value="all">All</option>
+                <option value="fashion">Fashion</option>
+                <option value="mobiles">Mobiles</option>
+                <option value="laptops">Laptops</option>
+                <option value="beauty">Beauty</option>
+                <option value="gaming">Gaming</option>
+                <option value="luxury">Luxury</option>
+                <option value="electronics">Electronics</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Search products, brands, categories">
+            <button type="button" id="searchBtn">Search</button>
+        </div>
+
+        <div class="nav-actions">
+            <a href="login.html" class="nav-pill">Login</a>
+            <a href="wishlist.html" class="nav-pill">Wishlist <span id="wishlistCount">0</span></a>
+            <a href="orders.html" class="nav-pill">Orders</a>
+            <a href="cart.html" class="cart-btn">Cart <span id="cartCount">0</span></a>
+        </div>
+
+        <div class="nav-links" id="navLinks">
+            <a href="index.html#fashion">Fashion</a>
+            <a href="index.html#electronics">Electronics</a>
+            <a href="index.html#beauty">Beauty</a>
+            <a href="index.html#gaming">Gaming</a>
+            <a href="index.html#luxury">Luxury</a>
+            <a href="index.html#ai">AI Assistant</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="cart-page">
+            <h1>Shopping Cart</h1>
+            <p class="subtitle" id="cartSubtitle">Review your items before checkout</p>
+
+            <div class="cart-grid">
+                <div class="cart-items" id="cartItems">
+                    <!-- Cart items will be rendered here -->
+                </div>
+                <div class="cart-summary" id="cartSummary">
+                    <h2>Order Summary</h2>
+                    <div id="summaryDetails">
+                        <!-- Summary will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>
+            <a href="index.html" class="logo">AVENOR</a>
+            <p>AI powered marketplace for smarter shopping, better comparison, and personalized product discovery.</p>
+        </div>
+        <div class="footer-links">
+            <a href="login.html">Login</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="orders.html">Orders</a>
+            <a href="support.html">Support</a>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="utils.js"></script>
+    <script src="products.js"></script>
+    <script src="cart.js"></script>
+    <script src="wishlist.js"></script>
+    <script src="search.js"></script>
+    <script src="ai.js"></script>
+    <script src="compare.js"></script>
+    <script src="checkout.js"></script>
+    <script src="payment.js"></script>
+    <script src="success.js"></script>
+    <script src="filters.js"></script>
+    <script src="animations.js"></script>
+    <script src="threeScene.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Wait for productService & cart to load
+        setTimeout(renderCart, 450);
+
+        function renderCart() {
+            const container = document.getElementById('cartItems');
+            const summary = document.getElementById('summaryDetails');
+            const subtitle = document.getElementById('cartSubtitle');
+
+            if (!window.cart || window.cart.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="icon">🛒</div>
+                        <h2>Your Cart is Empty</h2>
+                        <p>Looks like you haven't added any items yet.</p>
+                        <a href="index.html" class="shop-btn">Start Shopping</a>
+                    </div>
+                `;
+                if (summary) {
+                    summary.innerHTML = `
+                        <p style="color:var(--muted);text-align:center;">Add items to see summary</p>
+                    `;
+                }
+                if (subtitle) subtitle.textContent = 'Your cart is empty';
+                return;
+            }
+
+            if (subtitle) {
+                subtitle.textContent = `You have ${window.cart.reduce((sum, item) => sum + item.quantity, 0)} items in your cart`;
+            }
+
+            container.innerHTML = window.cart.map(item => `
+                <div class="cart-item">
+                    <div class="cart-item-image">
+                        <img src="${item.image}" alt="${item.name}" 
+                             onerror="this.src='https://via.placeholder.com/100'">
+                    </div>
+                    <div class="cart-item-info">
+                        <h3 onclick="window.goToProduct(${item.id})" style="cursor:pointer;">${item.name}</h3>
+                        <span class="category" style="text-transform:capitalize;">${item.category}</span>
+                        <div class="price">₹${item.price.toLocaleString()}</div>
+                    </div>
+                    <div class="cart-item-actions">
+                        <div class="quantity-control">
+                            <button onclick="updateCartQuantity(${item.id}, -1)">−</button>
+                            <span>${item.quantity}</span>
+                            <button onclick="updateCartQuantity(${item.id}, 1)">+</button>
+                        </div>
+                        <div style="display:flex;gap:10px;margin-top:8px;">
+                            <button class="remove-btn" onclick="window.removeFromCart(${item.id})" style="color:#ff4444;background:none;border:none;cursor:pointer;font-size:0.85rem;">Remove</button>
+                            <button class="wishlist-btn" onclick="window.moveFromCartToWishlist(${item.id})" style="color:var(--white);background:none;border:none;cursor:pointer;font-size:0.85rem;">♡ Move to Wishlist</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render summary using cart.js computations
+            const { subtotal, shipping, tax, total } = window.getCartTotals();
+
+            if (summary) {
+                summary.innerHTML = `
+                    <div class="summary-row" style="display:flex;justify-content:space-between;padding:10px 0;color:var(--muted);">
+                        <span>Subtotal (${window.cart.reduce((sum, item) => sum + item.quantity, 0)} items)</span>
+                        <span>₹${subtotal.toLocaleString()}</span>
+                    </div>
+                    <div class="summary-row" style="display:flex;justify-content:space-between;padding:10px 0;color:var(--muted);">
+                        <span>GST Tax (18%)</span>
+                        <span>₹${tax.toLocaleString()}</span>
+                    </div>
+                    <div class="summary-row" style="display:flex;justify-content:space-between;padding:10px 0;color:var(--muted);">
+                        <span>Shipping</span>
+                        <span>${shipping === 0 ? 'FREE' : '₹' + shipping.toLocaleString()}</span>
+                    </div>
+                    <div class="summary-row total" style="display:flex;justify-content:space-between;padding-top:16px;border-top:1px solid var(--line);font-size:1.3rem;font-weight:900;margin-top:10px;">
+                        <span>Total</span>
+                        <span class="amount" style="color:var(--maroon-light);font-size:1.55rem;">₹${total.toLocaleString()}</span>
+                    </div>
+                    <button class="checkout-btn" onclick="checkout()" style="width:100%;margin-top:20px;padding:16px;border-radius:999px;border:none;background:linear-gradient(135deg, var(--maroon-light), var(--maroon));color:white;font-weight:800;cursor:pointer;">Proceed to Checkout</button>
+                `;
+            }
+        }
+
+        function updateCartQuantity(productId, change) {
+            window.updateQuantity(productId, change);
+            renderCart();
+        }
+
+        function checkout() {
+            if (!window.cart || window.cart.length === 0) {
+                window.showNotification('Your cart is empty!');
+                return;
+            }
+            window.location.href = 'checkout.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Support & Help Center | Avenor</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .support-container {
+            max-width: 1100px;
+            margin: 40px auto 80px;
+            padding: 0 6vw;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 50px;
+        }
+
+        .support-header {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .support-header h1 {
+            font-size: 3.5rem;
+            font-weight: 950;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        .support-header p {
+            color: var(--muted);
+            font-size: 1.15rem;
+        }
+
+        /* FAQ Accordion Styling */
+        .faq-section h2 {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .faq-item {
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .faq-question {
+            padding: 20px 24px;
+            font-weight: 800;
+            font-size: 1.05rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .faq-question span {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .faq-answer-content {
+            padding: 0 24px 20px;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+        }
+
+        .faq-item.active .faq-question span {
+            transform: rotate(45deg);
+        }
+
+        /* Support Form Styling */
+        .ticket-section {
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+            padding: 35px;
+            box-shadow: var(--shadow);
+        }
+
+        .ticket-section h2 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+
+        .ticket-section p {
+            color: var(--muted);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .support-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input, .input-group textarea, .input-group select {
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.04);
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            border-color: var(--maroon-light);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .submit-ticket-btn {
+            padding: 16px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--maroon-light), var(--maroon));
+            color: white;
+            font-weight: 800;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+
+        .submit-ticket-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Contact details list */
+        .support-channels {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-top: 1px solid var(--line);
+            padding-top: 25px;
+        }
+
+        .channel {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .channel-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(143, 29, 45, 0.12);
+            color: var(--maroon-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .channel-info h4 {
+            font-weight: 800;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .channel-info p {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin: 3px 0 0 0;
+        }
+
+        @media (max-width: 850px) {
+            .support-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER NAVBAR -->
+    <nav class="nav">
+        <a href="index.html" class="logo">AVENOR</a>
+        <div class="search-bar">
+            <select id="categorySelect" style="background:transparent;border:none;color:white;cursor:pointer;outline:none;">
+                <option value="all">All Categories</option>
+                <option value="electronics">Electronics</option>
+                <option value="gaming">Gaming</option>
+                <option value="fashion">Fashion</option>
+                <option value="beauty">Beauty</option>
+                <option value="luxury">Luxury</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="How can we help you?">
+            <button type="button" id="searchBtn">Search</button>
+        </div>
+        <div class="nav-actions">
+            <a href="login.html" class="nav-pill">Login</a>
+            <a href="wishlist.html" class="nav-pill">Wishlist <span id="wishlistCount">0</span></a>
+            <a href="cart.html" class="cart-btn">Cart <span id="cartCount">0</span></a>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html#fashion">Fashion</a>
+            <a href="index.html#electronics">Electronics</a>
+            <a href="index.html#beauty">Beauty</a>
+            <a href="index.html#gaming">Gaming</a>
+            <a href="index.html#luxury">Luxury</a>
+            <a href="ai.html">AI Assistant</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="support-container">
+            <div class="support-header">
+                <p class="eyebrow" style="text-transform:uppercase;color:var(--maroon-light);font-weight:900;letter-spacing:2px;font-size:0.85rem;">24/7 Premium Concierge</p>
+                <h1>Help & Support Center</h1>
+                <p>Find quick answers or submit a query to our luxury concierge team.</p>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="faq-section">
+                <h2><span>❓</span> Frequently Asked Questions</h2>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            How do I track my luxury order?
+                            <span>+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                Once shipped, you will receive a tracking link via email. Alternatively, navigate to your <a href="orders.html">Orders Page</a> to check real-time courier checkpoints and dispatch details.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            What is Avenor's signature return policy?
+                            <span>+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                We offer complimentary pickup and returns on all items within 14 days of delivery. Goods must be in original condition with intact seals and tags.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            Can I purchase items using Cryptocurrency or UPI?
+                            <span>+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                Yes, Avenor supports major UPI services, luxury Credit cards, Netbanking, and mock cryptocurrency transfers on our secure payment gateway.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            How does the AI compare engine work?
+                            <span>+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                Our AI comparison uses Google Gemini APIs to evaluate technical specifications, product reviews, and price value points to highlight the best deals for you.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticket Section -->
+            <div class="ticket-section">
+                <h2>Submit a Support Ticket</h2>
+                <p>Can't find what you need? Describe your query and our team will get back to you shortly.</p>
+                
+                <form class="support-form" onsubmit="submitSupportTicket(event)">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Your Name</label>
+                            <input type="text" id="ticketName" placeholder="John Doe" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Email Address</label>
+                            <input type="email" id="ticketEmail" placeholder="john@example.com" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Category</label>
+                        <select id="ticketCategory">
+                            <option value="Order Tracking">Order tracking & Delivery</option>
+                            <option value="Refund">Return & Refund</option>
+                            <option value="Payment Issue">Payment & Billing</option>
+                            <option value="Product Help">Product Spec Query</option>
+                            <option value="AI Recommendation">AI Assistant Feedback</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Describe your query</label>
+                        <textarea id="ticketMessage" rows="5" placeholder="Please explain detail of your inquiry..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-ticket-btn">Submit Ticket</button>
+                </form>
+
+                <!-- Channels -->
+                <div class="support-channels">
+                    <div class="channel">
+                        <div class="channel-icon">📧</div>
+                        <div class="channel-info">
+                            <h4>Email Concierge</h4>
+                            <p>concierge@avenor.com • Responses within 2 hours</p>
+                        </div>
+                    </div>
+                    <div class="channel">
+                        <div class="channel-icon">📞</div>
+                        <div class="channel-info">
+                            <h4>Priority Call Service</h4>
+                            <p>1800-AVENOR-LUXE • Active 9 AM - 9 PM IST</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div>
+            <a href="index.html" class="logo">AVENOR</a>
+            <p>AI powered marketplace for smarter shopping, better comparison, and personalized product discovery.</p>
+        </div>
+        <div class="footer-links">
+            <a href="login.html">Login</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="orders.html">Orders</a>
+            <a href="support.html">Support</a>
+            <a href="admin.html">Admin</a>
+        </div>
+    </footer>
+
+    <!-- SCRIPT LOADER -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="utils.js"></script>
+    <script src="products.js"></script>
+    <script src="cart.js"></script>
+    <script src="wishlist.js"></script>
+    <script src="search.js"></script>
+    <script src="ai.js"></script>
+    <script src="compare.js"></script>
+    <script src="checkout.js"></script>
+    <script src="payment.js"></script>
+    <script src="success.js"></script>
+    <script src="filters.js"></script>
+    <script src="animations.js"></script>
+    <script src="threeScene.js"></script>
+    <script src="app.js"></script>
+    <script>
+        function toggleFaq(element) {
+            const item = element.closest('.faq-item');
+            const isActive = item.classList.contains('active');
+            
+            // Close all
+            document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
+            
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        }
+
+        function submitSupportTicket(e) {
+            e.preventDefault();
+            const name = document.getElementById('ticketName').value.trim();
+            const email = document.getElementById('ticketEmail').value.trim();
+            const category = document.getElementById('ticketCategory').value;
+            const message = document.getElementById('ticketMessage').value.trim();
+
+            const ticketId = 'TCK-' + Math.floor(100000 + Math.random() * 900000);
+
+            // Trigger notification
+            if (window.showNotification) {
+                window.showNotification(`🎟️ Ticket ${ticketId} created successfully! We will contact you soon.`);
+            } else {
+                alert(`🎟️ Support Ticket Created!\nTicket ID: ${ticketId}\nWe have received your query regarding "${category}".`);
+            }
+
+            e.target.reset();
+        }
+    </script>
+</body>
+</html>

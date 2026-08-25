@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment | Avenor</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== PAYMENT PAGE ===== */
+        .payment-page {
+            padding: 40px 6vw 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .payment-page h1 {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+
+        .payment-page .subtitle {
+            color: var(--muted);
+            margin-bottom: 30px;
+        }
+
+        /* ===== CHECKOUT PROGRESS ===== */
+        .checkout-progress {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .progress-step .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.3s ease;
+        }
+
+        .progress-step.active .step-number {
+            background: var(--maroon-light);
+            border-color: var(--maroon-light);
+            color: white;
+        }
+
+        .progress-step.completed .step-number {
+            background: #4caf50;
+            border-color: #4caf50;
+            color: white;
+        }
+
+        .progress-step.active {
+            color: white;
+        }
+
+        .progress-line {
+            width: 60px;
+            height: 2px;
+            background: rgba(255,255,255,0.1);
+            margin: 0 8px;
+        }
+
+        .progress-line.completed {
+            background: #4caf50;
+        }
+
+        /* ===== PAYMENT GRID ===== */
+        .payment-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 40px;
+        }
+
+        .payment-left {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .payment-section {
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 24px 28px;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .payment-section h2 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .payment-section h2 .section-icon {
+            font-size: 1.3rem;
+        }
+
+        /* ===== PAYMENT METHODS ===== */
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.02);
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .payment-method:hover {
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .payment-method.selected {
+            border-color: var(--maroon-light);
+            background: rgba(143,29,45,0.08);
+        }
+
+        .payment-method input[type="radio"] {
+            accent-color: var(--maroon-light);
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .payment-method .method-icon {
+            font-size: 1.5rem;
+        }
+
+        .payment-method .method-info {
+            flex: 1;
+        }
+
+        .payment-method .method-name {
+            font-weight: 700;
+        }
+
+        .payment-method .method-description {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        /* ===== UPI FIELDS ===== */
+        .upi-fields {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .upi-fields .form-group {
+            margin-bottom: 12px;
+        }
+
+        .upi-fields .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            color: var(--muted);
+        }
+
+        .upi-fields .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            color: white;
+            font-size: 0.95rem;
+            transition: 0.25s ease;
+        }
+
+        .upi-fields .form-group input:focus {
+            outline: none;
+            border-color: var(--maroon-light);
+        }
+
+        /* ===== CARD FIELDS ===== */
+        .card-fields {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .card-fields .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .card-fields .form-group {
+            margin-bottom: 12px;
+        }
+
+        .card-fields .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            color: var(--muted);
+        }
+
+        .card-fields .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            color: white;
+            font-size: 0.95rem;
+            transition: 0.25s ease;
+        }
+
+        .card-fields .form-group input:focus {
+            outline: none;
+            border-color: var(--maroon-light);
+        }
+
+        /* ===== UPI APPS ===== */
+        .upi-apps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .upi-app {
+            padding: 10px;
+            text-align: center;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.02);
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .upi-app:hover {
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .upi-app.selected {
+            border-color: var(--maroon-light);
+            background: rgba(143,29,45,0.08);
+        }
+
+        .upi-app .app-icon {
+            font-size: 1.8rem;
+            display: block;
+        }
+
+        .upi-app .app-name {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        /* ===== BANK LIST ===== */
+        .bank-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .bank-option {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.02);
+            cursor: pointer;
+            transition: 0.25s ease;
+            font-size: 0.9rem;
+        }
+
+        .bank-option:hover {
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .bank-option.selected {
+            border-color: var(--maroon-light);
+            background: rgba(143,29,45,0.08);
+        }
+
+        /* ===== ORDER SUMMARY IN PAYMENT ===== */
+        .payment-summary {
+            position: sticky;
+            top: 20px;
+        }
+
+        .payment-summary .summary-product {
+            display: flex;
+            gap: 14px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .payment-summary .summary-product img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .payment-summary .summary-product .info {
+            flex: 1;
+        }
+
+        .payment-summary .summary-product .info .name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .payment-summary .summary-product .info .meta {
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .payment-summary .summary-product .info .price {
+            font-weight: 700;
+            color: var(--maroon-light);
+        }
+
+        .payment-summary .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.95rem;
+        }
+
+        .payment-summary .summary-row.total {
+            font-size: 1.2rem;
+            font-weight: 800;
+            border-bottom: none;
+            padding-top: 14px;
+        }
+
+        .payment-summary .summary-row.total .amount {
+            color: var(--maroon-light);
+            font-size: 1.5rem;
+        }
+
+        .payment-summary .summary-row.discount {
+            color: #4caf50;
+        }
+
+        .pay-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--maroon-light), var(--maroon));
+            color: white;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.25s ease;
+            margin-top: 20px;
+        }
+
+        .pay-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(143,29,45,0.4);
+        }
+
+        .pay-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .payment-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-summary {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .payment-page h1 {
+                font-size: 2rem;
+            }
+
+            .checkout-progress {
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+
+            .progress-step {
+                font-size: 0.75rem;
+            }
+
+            .progress-step .step-number {
+                width: 26px;
+                height: 26px;
+                font-size: 0.75rem;
+            }
+
+            .progress-line {
+                width: 30px;
+            }
+
+            .payment-section {
+                padding: 16px 18px;
+            }
+
+            .upi-apps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .bank-list {
+                grid-template-columns: 1fr;
+            }
+
+            .card-fields .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .payment-page {
+                padding: 20px 14px 60px;
+            }
+
+            .payment-page h1 {
+                font-size: 1.6rem;
+            }
+
+            .checkout-progress {
+                padding: 12px 0;
+            }
+
+            .progress-step .step-number {
+                width: 22px;
+                height: 22px;
+                font-size: 0.65rem;
+            }
+
+            .progress-line {
+                width: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    <div class="page-glow"></div>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">AVENOR</a>
+
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="search-box">
+            <select id="searchCategory" aria-label="Search category">
+                <option value="all">All</option>
+                <option value="fashion">Fashion</option>
+                <option value="mobiles">Mobiles</option>
+                <option value="laptops">Laptops</option>
+                <option value="beauty">Beauty</option>
+                <option value="gaming">Gaming</option>
+                <option value="luxury">Luxury</option>
+                <option value="electronics">Electronics</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Search products, brands, categories">
+            <button type="button" id="searchBtn">Search</button>
+        </div>
+
+        <div class="nav-actions">
+            <a href="login.html" class="nav-pill">Login</a>
+            <a href="wishlist.html" class="nav-pill">Wishlist <span id="wishlistCount">0</span></a>
+            <a href="orders.html" class="nav-pill">Orders</a>
+            <a href="cart.html" class="cart-btn">Cart <span id="cartCount">0</span></a>
+        </div>
+
+        <div class="nav-links" id="navLinks">
+            <a href="index.html#fashion">Fashion</a>
+            <a href="index.html#electronics">Electronics</a>
+            <a href="index.html#beauty">Beauty</a>
+            <a href="index.html#gaming">Gaming</a>
+            <a href="index.html#luxury">Luxury</a>
+            <a href="#" onclick="toggleAIAssistant()">AI Assistant</a>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN ===== -->
+    <main>
+        <div class="payment-page">
+            <h1>Payment</h1>
+            <p class="subtitle">Complete your payment securely</p>
+
+            <!-- ===== CHECKOUT PROGRESS ===== -->
+            <div class="checkout-progress">
+                <div class="progress-step completed">
+                    <span class="step-number">✓</span>
+                    Cart
+                </div>
+                <div class="progress-line completed"></div>
+                <div class="progress-step completed">
+                    <span class="step-number">✓</span>
+                    Checkout
+                </div>
+                <div class="progress-line completed"></div>
+                <div class="progress-step active">
+                    <span class="step-number">3</span>
+                    Payment
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step">
+                    <span class="step-number">4</span>
+                    Complete
+                </div>
+            </div>
+
+            <!-- ===== PAYMENT GRID ===== -->
+            <div class="payment-grid">
+                <!-- ===== LEFT COLUMN ===== -->
+                <div class="payment-left">
+
+                    <!-- ===== PAYMENT METHOD ===== -->
+                    <div class="payment-section">
+                        <h2><span class="section-icon">💳</span> Select Payment Method</h2>
+                        <div class="payment-methods" id="paymentMethods">
+                            <label class="payment-method selected" data-method="upi">
+                                <input type="radio" name="paymentMethod" value="upi" checked>
+                                <span class="method-icon">📱</span>
+                                <div class="method-info">
+                                    <div class="method-name">UPI</div>
+                                    <div class="method-description">Pay using Google Pay, PhonePe, Paytm</div>
+                                </div>
+                            </label>
+
+                            <label class="payment-method" data-method="card">
+                                <input type="radio" name="paymentMethod" value="card">
+                                <span class="method-icon">💳</span>
+                                <div class="method-info">
+                                    <div class="method-name">Credit / Debit Card</div>
+                                    <div class="method-description">Visa, Mastercard, RuPay, American Express</div>
+                                </div>
+                            </label>
+
+                            <label class="payment-method" data-method="netbanking">
+                                <input type="radio" name="paymentMethod" value="netbanking">
+                                <span class="method-icon">🏦</span>
+                                <div class="method-info">
+                                    <div class="method-name">Net Banking</div>
+                                    <div class="method-description">Direct bank transfer</div>
+                                </div>
+                            </label>
+
+                            <label class="payment-method" data-method="cod">
+                                <input type="radio" name="paymentMethod" value="cod">
+                                <span class="method-icon">💵</span>
+                                <div class="method-info">
+                                    <div class="method-name">Cash on Delivery</div>
+                                    <div class="method-description">Pay when you receive the order</div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- ===== UPI FIELDS ===== -->
+                        <div id="upiFields" class="upi-fields">
+                            <div class="form-group">
+                                <label>UPI ID</label>
+                                <input type="text" placeholder="example@upi" id="upiId">
+                            </div>
+                            <div class="upi-apps">
+                                <div class="upi-app selected" data-app="gpay">
+                                    <span class="app-icon">🟢</span>
+                                    <span class="app-name">Google Pay</span>
+                                </div>
+                                <div class="upi-app" data-app="phonepe">
+                                    <span class="app-icon">🔵</span>
+                                    <span class="app-name">PhonePe</span>
+                                </div>
+                                <div class="upi-app" data-app="paytm">
+                                    <span class="app-icon">🟣</span>
+                                    <span class="app-name">Paytm</span>
+                                </div>
+                                <div class="upi-app" data-app="amazon">
+                                    <span class="app-icon">🟠</span>
+                                    <span class="app-name">Amazon Pay</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ===== CARD FIELDS ===== -->
+                        <div id="cardFields" class="card-fields" style="display:none;">
+                            <div class="form-group">
+                                <label>Card Number</label>
+                                <input type="text" placeholder="1234 5678 9012 3456" id="cardNumber" maxlength="19">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Expiry Date</label>
+                                    <input type="text" placeholder="MM/YY" id="cardExpiry" maxlength="5">
+                                </div>
+                                <div class="form-group">
+                                    <label>CVV</label>
+                                    <input type="text" placeholder="123" id="cardCvv" maxlength="4">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Cardholder Name</label>
+                                <input type="text" placeholder="John Doe" id="cardName">
+                            </div>
+                        </div>
+
+                        <!-- ===== NET BANKING FIELDS ===== -->
+                        <div id="netbankingFields" style="display:none; margin-top:16px;">
+                            <div class="form-group">
+                                <label>Select Your Bank</label>
+                                <select id="bankSelect" style="width:100%;padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:white;font-size:0.95rem;">
+                                    <option value="">Select a bank</option>
+                                    <option value="sbi">State Bank of India</option>
+                                    <option value="hdfc">HDFC Bank</option>
+                                    <option value="icici">ICICI Bank</option>
+                                    <option value="axis">Axis Bank</option>
+                                    <option value="kotak">Kotak Mahindra Bank</option>
+                                    <option value="yes">Yes Bank</option>
+                                    <option value="pnb">Punjab National Bank</option>
+                                    <option value="bob">Bank of Baroda</option>
+                                    <option value="canara">Canara Bank</option>
+                                    <option value="idfc">IDFC First Bank</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- ===== COD FIELDS ===== -->
+                        <div id="codFields" style="display:none; margin-top:16px; padding:16px; border-radius:12px; background:rgba(76,175,80,0.05); border:1px solid rgba(76,175,80,0.1);">
+                            <p style="color:var(--muted); font-size:0.95rem;">
+                                <span style="color:#4caf50;">✓</span> Pay when you receive your order.
+                                Cash or card accepted on delivery.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- ===== SECURITY SECTION ===== -->
+                    <div class="payment-section">
+                        <h2><span class="section-icon">🔒</span> Secure Payment</h2>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                            <div style="padding:12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05);">
+                                <span style="font-size:1.2rem;">🔐</span>
+                                <div style="font-weight:700; font-size:0.9rem;">256-bit Encryption</div>
+                                <div style="color:var(--muted); font-size:0.8rem;">Your data is secure</div>
+                            </div>
+                            <div style="padding:12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05);">
+                                <span style="font-size:1.2rem;">🛡️</span>
+                                <div style="font-weight:700; font-size:0.9rem;">Fraud Protection</div>
+                                <div style="color:var(--muted); font-size:0.8rem;">24/7 monitoring</div>
+                            </div>
+                            <div style="padding:12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05);">
+                                <span style="font-size:1.2rem;">✅</span>
+                                <div style="font-weight:700; font-size:0.9rem;">PCI DSS Compliant</div>
+                                <div style="color:var(--muted); font-size:0.8rem;">Industry standard</div>
+                            </div>
+                            <div style="padding:12px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05);">
+                                <span style="font-size:1.2rem;">🔒</span>
+                                <div style="font-weight:700; font-size:0.9rem;">Privacy Protected</div>
+                                <div style="color:var(--muted); font-size:0.8rem;">Your data is private</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== RIGHT COLUMN - ORDER SUMMARY ===== -->
+                <div class="payment-summary">
+                    <div class="payment-section">
+                        <h2>Order Summary</h2>
+                        <div id="paymentOrderItems">
+                            <!-- Items will be rendered here -->
+                        </div>
+
+                        <!-- ===== PRICE DETAILS ===== -->
+                        <div id="paymentPriceDetails">
+                            <!-- Price details rendered here -->
+                        </div>
+
+                        <!-- ===== SHIPPING ADDRESS ===== -->
+                        <div style="margin: 16px 0; padding: 14px; border-radius: 12px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05);">
+                            <div style="font-weight:700; font-size:0.9rem; margin-bottom:4px;">📦 Shipping Address</div>
+                            <div style="color:var(--muted); font-size:0.85rem; line-height:1.6;" id="shippingAddressDisplay">
+                                Loading address...
+                            </div>
+                        </div>
+
+                        <!-- ===== PAY BUTTON ===== -->
+                        <button class="pay-btn" id="payBtn" onclick="processPayment()">Pay Now</button>
+
+                        <div style="text-align:center; margin-top:12px; color:var(--muted); font-size:0.8rem;">
+                            By clicking "Pay Now" you agree to our Terms & Conditions
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div>
+            <a href="index.html" class="logo">AVENOR</a>
+            <p>AI powered marketplace for smarter shopping, better comparison, and personalized product discovery.</p>
+        </div>
+        <div class="footer-links">
+            <a href="login.html">Login</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="orders.html">Orders</a>
+            <a href="support.html">Support</a>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="utils.js"></script>
+    <script src="products.js"></script>
+    <script src="cart.js"></script>
+    <script src="wishlist.js"></script>
+    <script src="search.js"></script>
+    <script src="ai.js"></script>
+    <script src="compare.js"></script>
+    <script src="checkout.js"></script>
+    <script src="payment.js"></script>
+    <script src="success.js"></script>
+    <script src="filters.js"></script>
+    <script src="animations.js"></script>
+    <script src="threeScene.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // ===== RENDER ORDER SUMMARY =====
+        function renderPaymentSummary() {
+            const itemsContainer = document.getElementById('paymentOrderItems');
+            const priceContainer = document.getElementById('paymentPriceDetails');
+
+            if (cart.length === 0) {
+                itemsContainer.innerHTML = `
+                    <p style="color:var(--muted);text-align:center;padding:20px 0;">
+                        Your cart is empty. 
+                        <a href="index.html" style="color:var(--maroon-light);">Start Shopping</a>
+                    </p>
+                `;
+                priceContainer.innerHTML = '';
+                document.getElementById('payBtn').disabled = true;
+                return;
+            }
+
+            document.getElementById('payBtn').disabled = false;
+
+            // Render items
+            itemsContainer.innerHTML = cart.map(item => `
+                <div class="summary-product">
+                    <img src="${item.image}" alt="${item.name}" onerror="this.src='images/no-image.png'">
+                    <div class="info">
+                        <div class="name">${item.name}</div>
+                        <div class="meta">${item.category} × ${item.quantity}</div>
+                        <div class="price">₹${(item.price * item.quantity).toLocaleString()}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Calculate prices
+            const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            const deliveryPrice = 0; // Will come from checkout
+            const discount = 0; // Will come from checkout
+            const total = subtotal + deliveryPrice - discount;
+
+            // Render price details
+            priceContainer.innerHTML = `
+                <div class="summary-row">
+                    <span>Subtotal (${cart.reduce((sum, item) => sum + item.quantity, 0)} items)</span>
+                    <span>₹${subtotal.toLocaleString()}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span>${deliveryPrice === 0 ? 'FREE' : '₹' + deliveryPrice.toLocaleString()}</span>
+                </div>
+                ${discount > 0 ? `
+                    <div class="summary-row discount">
+                        <span>Discount</span>
+                        <span>-₹${discount.toLocaleString()}</span>
+                    </div>
+                ` : ''}
+                <div class="summary-row">
+                    <span>Taxes</span>
+                    <span>Included</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Grand Total</span>
+                    <span class="amount">₹${total.toLocaleString()}</span>
+                </div>
+            `;
+
+            // Load shipping address
+            loadShippingAddress();
+        }
+
+        // ===== LOAD SHIPPING ADDRESS =====
+        function loadShippingAddress() {
+            const display = document.getElementById('shippingAddressDisplay');
+            const saved = localStorage.getItem('checkoutAddress');
+            
+            if (saved) {
+                try {
+                    const address = JSON.parse(saved);
+                    display.innerHTML = `
+                        ${address.fullName || 'N/A'}<br>
+                        ${address.houseNo || ''}${address.houseNo && address.street ? ', ' : ''}${address.street || ''}<br>
+                        ${address.landmark ? address.landmark + ', ' : ''}
+                        ${address.city || ''}${address.city && address.state ? ', ' : ''}${address.state || ''}<br>
+                        ${address.pinCode || 'N/A'}<br>
+                        📞 ${address.mobileNumber || 'N/A'}
+                    `;
+                } catch (e) {
+                    display.textContent = 'Address not found. Please go back to checkout.';
+                }
+            } else {
+                display.textContent = 'No address saved. Please go back to checkout.';
+            }
+        }
+
+        // ===== TOGGLE PAYMENT FIELDS =====
+        function togglePaymentFields(method) {
+            document.getElementById('upiFields').style.display = 'none';
+            document.getElementById('cardFields').style.display = 'none';
+            document.getElementById('netbankingFields').style.display = 'none';
+            document.getElementById('codFields').style.display = 'none';
+
+            // Update selected state
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            document.querySelector(`.payment-method[data-method="${method}"]`)?.classList.add('selected');
+
+            switch(method) {
+                case 'upi':
+                    document.getElementById('upiFields').style.display = 'block';
+                    break;
+                case 'card':
+                    document.getElementById('cardFields').style.display = 'block';
+                    break;
+                case 'netbanking':
+                    document.getElementById('netbankingFields').style.display = 'block';
+                    break;
+                case 'cod':
+                    document.getElementById('codFields').style.display = 'block';
+                    break;
+            }
+        }
+
+        // ===== VALIDATE PIN CODE =====
+        function validatePinCode(pin) {
+            return /^[0-9]{6}$/.test(pin);
+        }
+
+        // ===== VALIDATE MOBILE =====
+        function validateMobile(mobile) {
+            return /^[0-9]{10}$/.test(mobile);
+        }
+
+        // ===== PROCESS PAYMENT =====
+        function processPayment() {
+            if (cart.length === 0) {
+                showNotification('Your cart is empty!');
+                return;
+            }
+
+            const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked');
+            if (!selectedMethod) {
+                showNotification('Please select a payment method');
+                return;
+            }
+
+            const method = selectedMethod.value;
+            let isValid = true;
+
+            // Validate based on method
+            if (method === 'upi') {
+                const upiId = document.getElementById('upiId').value.trim();
+                if (!upiId || !upiId.includes('@')) {
+                    showNotification('Please enter a valid UPI ID (example@upi)');
+                    isValid = false;
+                }
+            } else if (method === 'card') {
+                const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+                const expiry = document.getElementById('cardExpiry').value;
+                const cvv = document.getElementById('cardCvv').value;
+                const name = document.getElementById('cardName').value.trim();
+
+                if (cardNumber.length < 16) {
+                    showNotification('Please enter a valid card number');
+                    isValid = false;
+                } else if (!expiry || expiry.length < 5) {
+                    showNotification('Please enter a valid expiry date (MM/YY)');
+                    isValid = false;
+                } else if (!cvv || cvv.length < 3) {
+                    showNotification('Please enter a valid CVV');
+                    isValid = false;
+                } else if (!name) {
+                    showNotification('Please enter the cardholder name');
+                    isValid = false;
+                }
+            } else if (method === 'netbanking') {
+                const bank = document.getElementById('bankSelect').value;
+                if (!bank) {
+                    showNotification('Please select your bank');
+                    isValid = false;
+                }
+            } else if (method === 'cod') {
+                // COD doesn't need validation
+            }
+
+            if (!isValid) return;
+
+            // Validate address
+            const saved = localStorage.getItem('checkoutAddress');
+            if (!saved) {
+                showNotification('Please add a delivery address first');
+                return;
+            }
+
+            // Show processing state
+            const btn = document.getElementById('payBtn');
+            btn.textContent = 'Processing...';
+            btn.disabled = true;
+
+            // Simulate payment processing
+            setTimeout(() => {
+                // Clear cart
+                cart = [];
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+
+                // Redirect to success
+                window.location.href = 'success.html';
+            }, 2000);
+        }
+
+        // ===== EVENT LISTENERS =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Payment method selection
+            document.querySelectorAll('.payment-method input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        togglePaymentFields(this.value);
+                    }
+                });
+            });
+
+            // UPI app selection
+            document.querySelectorAll('.upi-app').forEach(app => {
+                app.addEventListener('click', function() {
+                    document.querySelectorAll('.upi-app').forEach(a => a.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            // Bank selection
+            document.querySelectorAll('.bank-option').forEach(bank => {
+                bank.addEventListener('click', function() {
+                    document.querySelectorAll('.bank-option').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    document.getElementById('bankSelect').value = this.dataset.bank;
+                });
+            });
+
+            // Card number formatting
+            const cardInput = document.getElementById('cardNumber');
+            if (cardInput) {
+                cardInput.addEventListener('input', function() {
+                    let value = this.value.replace(/\D/g, '');
+                    if (value.length > 16) value = value.slice(0, 16);
+                    let formatted = '';
+                    for (let i = 0; i < value.length; i++) {
+                        if (i > 0 && i % 4 === 0) formatted += ' ';
+                        formatted += value[i];
+                    }
+                    this.value = formatted;
+                });
+            }
+
+            // Expiry formatting
+            const expiryInput = document.getElementById('cardExpiry');
+            if (expiryInput) {
+                expiryInput.addEventListener('input', function() {
+                    let value = this.value.replace(/\D/g, '');
+                    if (value.length > 4) value = value.slice(0, 4);
+                    if (value.length >= 2) {
+                        const month = parseInt(value.slice(0, 2));
+                        if (month > 12) {
+                            this.value = '12' + value.slice(2);
+                            return;
+                        }
+                    }
+                    if (value.length >= 2) {
+                        this.value = value.slice(0, 2) + '/' + value.slice(2);
+                    } else {
+                        this.value = value;
+                    }
+                });
+            }
+
+            // CVV formatting
+            const cvvInput = document.getElementById('cardCvv');
+            if (cvvInput) {
+                cvvInput.addEventListener('input', function() {
+                    this.value = this.value.replace(/\D/g, '').slice(0, 4);
+                });
+            }
+
+            // Render summary
+            renderPaymentSummary();
+            updateCartCount();
+            updateWishlistCount();
+
+            // Check if cart is empty and show warning
+            if (cart.length === 0) {
+                showNotification('Your cart is empty. Add some products first!');
+            }
+        });
+
+        // Re-render when cart changes
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'cart') {
+                renderPaymentSummary();
+            }
+        });
+    </script>
+</body>
+</html>

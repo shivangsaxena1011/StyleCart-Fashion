@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avenor | AI Powered Marketplace</title>
+    <meta name="description" content="Avenor is an AI powered marketplace for smarter product search, comparison, and recommendations.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    <div class="page-glow"></div>
+
+    <nav class="navbar">
+        <div class="nav-top-row" style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:20px; flex-wrap:nowrap;">
+            <a href="index.html" class="logo">AVENOR</a>
+
+            <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <div class="search-box">
+                <select id="searchCategory" aria-label="Search category">
+                    <option value="all">All</option>
+                    <option value="fashion">Fashion</option>
+                    <option value="mobiles">Mobiles</option>
+                    <option value="laptops">Laptops</option>
+                    <option value="beauty">Beauty</option>
+                    <option value="gaming">Gaming</option>
+                    <option value="luxury">Luxury</option>
+                    <option value="electronics">Electronics</option>
+                </select>
+                <div class="search-input-wrapper">
+                    <input type="text" id="searchInput" placeholder="Search products, brands, categories">
+                    <button type="button" id="voiceSearchBtn" class="search-icon-btn voice" title="Voice Search">🎤</button>
+                    <button type="button" id="imageSearchBtn" class="search-icon-btn image" title="Image Search" onclick="document.getElementById('imageSearchModal').style.display='flex'">📸</button>
+                </div>
+                <button type="button" id="searchBtn">Search</button>
+            </div>
+
+            <div class="nav-actions">
+                <a href="login.html" class="nav-pill">Login</a>
+                <a href="wishlist.html" class="nav-pill">Wishlist <span id="wishlistCount">0</span></a>
+                <a href="orders.html" class="nav-pill">Orders</a>
+                <a href="cart.html" class="cart-btn">Cart <span id="cartCount">0</span></a>
+            </div>
+        </div>
+
+        <div class="nav-links" id="navLinks">
+            <a href="#fashion">Fashion</a>
+            <a href="#electronics">Electronics</a>
+            <a href="#beauty">Beauty</a>
+            <a href="#gaming">Gaming</a>
+            <a href="#luxury">Luxury</a>
+            <a href="ai.html">AI Assistant</a>
+        </div>
+    </nav>
+
+    <div class="market-strip">
+        <a href="#flash">Flash Deals</a>
+        <a href="#trending">Trending Products</a>
+        <a href="#recommended">Recommended For You</a>
+        <a href="#electronics">Top Electronics</a>
+        <a href="#luxury">Luxury Collection</a>
+        <a href="#best">Best Sellers</a>
+        <a href="#new">New Arrivals</a>
+        <a href="#featured">Featured Products</a>
+        <a href="#recent">Recently Viewed</a>
+    </div>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content spatial-layer" data-depth="18">
+                <p class="eyebrow">AI Powered Marketplace</p>
+                <h1>Shop Smarter With AI</h1>
+                <p class="hero-text">
+                    Search products, compare items, get recommendations instantly, and discover the best deals across fashion, electronics, beauty, gaming, luxury, and more.
+                </p>
+
+                <div class="ai-search-panel">
+                    <label for="aiSearch">What are you looking for today?</label>
+                    <div class="ai-search-box">
+                        <input id="aiSearch" type="text" placeholder="Gaming Laptop under ₹70,000">
+                        <button type="button" id="aiSearchBtn">Ask AI</button>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="#recommended" class="btn primary">Start Shopping</a>
+                    <a href="#ai" class="btn secondary">Try AI Assistant</a>
+                </div>
+
+                <div class="trust-row">
+                    <div>
+                        <strong>100K+</strong>
+                        <span>Products</span>
+                    </div>
+                    <div>
+                        <strong>AI</strong>
+                        <span>Smart Search</span>
+                    </div>
+                    <div>
+                        <strong>24/7</strong>
+                        <span>Shopping Help</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-stage spatial-layer" data-depth="-14">
+                <canvas id="marketCanvas"></canvas>
+                <div class="floating-tag tag-one">AI Compare</div>
+                <div class="floating-tag tag-two">Best Deals</div>
+                <div class="floating-tag tag-three">Smart Picks</div>
+            </div>
+        </section>
+
+        <section class="categories" id="fashion">
+            <div class="section-head">
+                <p class="eyebrow">Shop By Category</p>
+                <h2>Everything you need in one marketplace</h2>
+            </div>
+
+            <div class="category-grid">
+                <article class="category-card" onclick="filterByCategory('fashion')">
+                    <span>01</span>
+                    <div class="category-icon">👗</div>
+                    <h3>Fashion</h3>
+                    <p>Clothing, footwear, watches, bags, and accessories.</p>
+                </article>
+
+                <article class="category-card" onclick="filterByCategory('mobiles')">
+                    <span>02</span>
+                    <div class="category-icon">📱</div>
+                    <h3>Mobiles</h3>
+                    <p>Latest smartphones, accessories, and smart devices.</p>
+                </article>
+
+                <article class="category-card" onclick="filterByCategory('laptops')">
+                    <span>03</span>
+                    <div class="category-icon">💻</div>
+                    <h3>Laptops</h3>
+                    <p>Work, study, creator, gaming, and premium laptops.</p>
+                </article>
+
+                <article class="category-card" onclick="filterByCategory('beauty')">
+                    <span>04</span>
+                    <div class="category-icon">💄</div>
+                    <h3>Beauty</h3>
+                    <p>Perfumes, skincare, grooming, and beauty essentials.</p>
+                </article>
+
+                <article class="category-card" onclick="filterByCategory('gaming')">
+                    <span>05</span>
+                    <div class="category-icon">🎧</div>
+                    <h3>Gaming</h3>
+                    <p>Headsets, keyboards, consoles, chairs, and accessories.</p>
+                </article>
+
+                <article class="category-card" onclick="filterByCategory('luxury')">
+                    <span>06</span>
+                    <div class="category-icon">⌚</div>
+                    <h3>Luxury</h3>
+                    <p>Premium watches, fashion, perfumes, and lifestyle items.</p>
+                </article>
+
+                <article class="category-card" onclick="filterByCategory('home')">
+                    <span>07</span>
+                    <div class="category-icon">🏠</div>
+                    <h3>Home</h3>
+                    <p>Decor, smart home, kitchen, comfort, and utility items.</p>
+                </article>
+
+                <article class="category-card" onclick="filterByCategory('accessories')">
+                    <span>08</span>
+                    <div class="category-icon">🎒</div>
+                    <h3>Accessories</h3>
+                    <p>Daily essentials, tech add-ons, bags, and lifestyle gear.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="bento-section" id="ai">
+            <div class="section-head">
+                <p class="eyebrow">Avenor Intelligence</p>
+                <h2>AI built into the shopping experience</h2>
+            </div>
+
+            <div class="bento-grid">
+                <article class="bento-card large tilt-card">
+                    <span class="card-kicker">AI Product Search</span>
+                    <h3>Find products using natural language</h3>
+                    <p>Search like a real conversation: "best phone under ₹30,000", "formal shoes for office", or "gaming laptop under ₹70,000".</p>
+                    <button class="mini-btn">Search With AI</button>
+                </article>
+
+                <article class="bento-card tall tilt-card">
+                    <span class="card-kicker">AI Comparison</span>
+                    <h3>Compare before buying</h3>
+                    <p>Avenor helps compare price, rating, features, reviews, and value for money.</p>
+                </article>
+
+                <article class="bento-card tilt-card">
+                    <span class="card-kicker">AI Stylist</span>
+                    <h3>Fashion guidance</h3>
+                    <p>Get outfit suggestions for occasions, colors, budget, and personal style.</p>
+                </article>
+
+                <article class="bento-card tilt-card">
+                    <span class="card-kicker">AI Assistant</span>
+                    <h3>Shopping help</h3>
+                    <p>Ask what to buy, what to avoid, and what gives the best value.</p>
+                </article>
+
+                <article class="bento-card wide tilt-card">
+                    <span class="card-kicker">Marketplace Engine</span>
+                    <h3>Fast browsing, better choices, smarter recommendations</h3>
+                    <p>Avenor combines marketplace shopping with AI discovery, product suggestions, comparison, wishlist, cart, orders, and admin management.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- My AI Fashion Feed -->
+        <section class="product-section" id="aiHomeFeed" style="display:block; background:linear-gradient(180deg, rgba(143,29,45,0.03) 0%, transparent 100%); padding:40px 0; border-top:1px solid rgba(255,255,255,0.03); margin-bottom:40px;">
+            <div class="section-head">
+                <span class="ai-badge" style="margin-bottom:10px;">PERSONALIZED AI FEED</span>
+                <h2>✨ My AI Fashion Feed</h2>
+                <p>Curated style cards and combinations based on your fashion preferences</p>
+            </div>
+            
+            <div class="ai-feed-container" style="max-width:1200px; margin:0 auto; padding:0 20px;">
+                <div class="ai-profile-quick-select" style="display:flex; justify-content:center; gap:12px; margin-bottom:30px; flex-wrap:wrap;">
+                    <span style="color:var(--muted); align-self:center; font-size:0.9rem;">Style Persona:</span>
+                    <button class="feed-persona-btn active" onclick="loadPersonalizedFeed('streetwear', this)" style="padding:8px 18px; border-radius:99px; border:1px solid var(--maroon-light); background:rgba(143,29,45,0.1); color:white; cursor:pointer;">Urban Streetwear</button>
+                    <button class="feed-persona-btn" onclick="loadPersonalizedFeed('formal', this)" style="padding:8px 18px; border-radius:99px; border:1px solid rgba(255,255,255,0.1); background:none; color:var(--muted); cursor:pointer;">Corporate Formal</button>
+                    <button class="feed-persona-btn" onclick="loadPersonalizedFeed('luxury', this)" style="padding:8px 18px; border-radius:99px; border:1px solid rgba(255,255,255,0.1); background:none; color:var(--muted); cursor:pointer;">Swiss Luxury</button>
+                    <button class="feed-persona-btn" onclick="loadPersonalizedFeed('casual', this)" style="padding:8px 18px; border-radius:99px; border:1px solid rgba(255,255,255,0.1); background:none; color:var(--muted); cursor:pointer;">Smart Casual</button>
+                </div>
+                
+                <div class="ai-feed-content-wrapper" style="display:grid; grid-template-columns:350px 1fr; gap:40px;">
+                    <!-- Persona styling card -->
+                    <div class="ai-persona-card glassmorphism" id="aiPersonaCard" style="padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); text-align:center;">
+                        <!-- Content will load dynamically -->
+                    </div>
+                    
+                    <!-- Products matching persona -->
+                    <div class="product-grid" id="aiFeedProducts" style="margin:0; display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:24px;"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="product-section" id="flash">
+            <div class="section-head">
+                <p class="eyebrow">Flash Deals</p>
+                <h2>Limited time offers</h2>
+            </div>
+            <div class="product-grid" id="flashDeals"></div>
+        </section>
+
+        <section class="product-section" id="trending">
+            <div class="section-head">
+                <p class="eyebrow">Trending Products</p>
+                <h2>Popular right now</h2>
+            </div>
+            <div class="product-grid" id="trendingProducts"></div>
+        </section>
+
+        <section class="product-section" id="recommended">
+            <div class="section-head">
+                <p class="eyebrow">Recommended For You</p>
+                <h2>Smart picks by Avenor AI</h2>
+            </div>
+            <div class="product-grid" id="recommendedProducts"></div>
+        </section>
+
+        <section class="product-section" id="electronics">
+            <div class="section-head">
+                <p class="eyebrow">Top Rated Electronics</p>
+                <h2>Performance products worth buying</h2>
+            </div>
+            <div class="product-grid" id="electronicsProducts"></div>
+        </section>
+
+        <section class="product-section" id="luxury">
+            <div class="section-head">
+                <p class="eyebrow">Luxury Collection</p>
+                <h2>Premium picks with a sharp finish</h2>
+            </div>
+            <div class="product-grid" id="luxuryProducts"></div>
+        </section>
+
+        <section class="product-section" id="best">
+            <div class="section-head">
+                <p class="eyebrow">Bestsellers</p>
+                <h2>Most popular choices</h2>
+            </div>
+            <div class="product-grid" id="bestSellers"></div>
+        </section>
+
+        <section class="product-section" id="new">
+            <div class="section-head">
+                <p class="eyebrow">New Arrivals</p>
+                <h2>Freshly dropped luxury items</h2>
+            </div>
+            <div class="product-grid" id="newArrivals"></div>
+        </section>
+
+        <section class="product-section" id="featured">
+            <div class="section-head">
+                <p class="eyebrow">Featured Products</p>
+                <h2>Handpicked premium selections</h2>
+            </div>
+            <div class="product-grid" id="featuredProducts"></div>
+        </section>
+
+        <section class="product-section" id="recent">
+            <div class="section-head">
+                <p class="eyebrow">Recently Viewed</p>
+                <h2>Continue your shopping journey</h2>
+            </div>
+            <div class="product-grid" id="recentProducts"></div>
+        </section>
+    </main>
+
+    <footer>
+        <div>
+            <a href="index.html" class="logo">AVENOR</a>
+            <p>AI powered marketplace for smarter shopping, better comparison, and personalized product discovery.</p>
+        </div>
+
+        <div class="footer-links">
+            <a href="login.html">Login</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="orders.html">Orders</a>
+            <a href="support.html">Support</a>
+            <a href="admin.html">Admin</a>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="utils.js"></script>
+    <script src="products.js"></script>
+    <script src="cart.js"></script>
+    <script src="wishlist.js"></script>
+    <script src="search.js"></script>
+    <script src="ai.js"></script>
+    <script src="compare.js"></script>
+    <script src="checkout.js"></script>
+    <script src="payment.js"></script>
+    <script src="success.js"></script>
+    <script src="filters.js"></script>
+    <script src="animations.js"></script>
+    <script src="threeScene.js"></script>
+    <script src="app.js"></script>
+
+    <!-- Image Search Modal -->
+    <div id="imageSearchModal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; backdrop-filter:blur(10px); align-items:center; justify-content:center;">
+        <div class="modal-content glassmorphism" style="max-width:500px; width:90%; padding:35px; border-radius:24px; position:relative; text-align:center; background:rgba(18,18,18,0.9); border:1px solid rgba(255,255,255,0.08); box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+            <button class="close-modal-btn" onclick="document.getElementById('imageSearchModal').style.display='none'" style="position:absolute; top:20px; right:20px; background:none; border:none; color:white; font-size:1.5rem; cursor:pointer; line-height:1;">✕</button>
+            <h3 style="font-size:1.6rem; margin-bottom:15px; font-weight:800; background:linear-gradient(135deg,#fff,#8f1d2d); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">📸 AI Visual Search</h3>
+            <p style="color:var(--muted); font-size:0.95rem; margin-bottom:25px;">Upload a style inspiration photo to let Avenor AI visually match catalog products.</p>
+            
+            <div class="image-upload-zone" id="imageSearchDropZone" onclick="document.getElementById('imageSearchFileInput').click()" style="border:2px dashed rgba(255,255,255,0.15); border-radius:16px; padding:40px 20px; background:rgba(255,255,255,0.01); cursor:pointer; transition:all 0.3s; margin-bottom:15px;">
+                <span style="font-size:3rem; display:block; margin-bottom:15px;">📁</span>
+                <span style="font-weight:700; display:block; margin-bottom:5px;">Select Outfit Image</span>
+                <span style="color:var(--muted); font-size:0.8rem;">Supports JPG, PNG</span>
+                <input type="file" id="imageSearchFileInput" accept="image/*" style="display:none;">
+            </div>
+
+            <div class="visual-scanner" id="imageSearchScanner" style="display:none; margin-top:20px;">
+                <div class="scanner-laser" style="height:3px; background:var(--maroon-light); box-shadow:0 0 10px var(--maroon-light); animation:scanLaser 2s linear infinite;"></div>
+                <p style="margin-top:15px; color:var(--muted); font-size:0.85rem;">🤖 AI is scanning colors, patterns, and categories...</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

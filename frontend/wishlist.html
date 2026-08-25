@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist | Avenor</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .wishlist-page {
+            padding: 40px 6vw 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .wishlist-page h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .wishlist-page .subtitle {
+            color: var(--muted);
+            margin-bottom: 40px;
+        }
+
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .empty-wishlist {
+            text-align: center;
+            padding: 80px 20px;
+            grid-column: 1 / -1;
+        }
+
+        .empty-wishlist .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .empty-wishlist h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-wishlist p {
+            color: var(--muted);
+            margin-bottom: 30px;
+        }
+
+        .empty-wishlist .shop-btn {
+            padding: 14px 40px;
+            border-radius: 999px;
+            background: var(--maroon-light);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-block;
+            transition: 0.25s ease;
+        }
+
+        .empty-wishlist .shop-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(143,29,45,0.4);
+        }
+
+        @media (max-width: 992px) {
+            .wishlist-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .wishlist-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .wishlist-page h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    <div class="page-glow"></div>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">AVENOR</a>
+
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="search-box">
+            <select id="searchCategory" aria-label="Search category">
+                <option value="all">All</option>
+                <option value="fashion">Fashion</option>
+                <option value="mobiles">Mobiles</option>
+                <option value="laptops">Laptops</option>
+                <option value="beauty">Beauty</option>
+                <option value="gaming">Gaming</option>
+                <option value="luxury">Luxury</option>
+                <option value="electronics">Electronics</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Search products, brands, categories">
+            <button type="button" id="searchBtn">Search</button>
+        </div>
+
+        <div class="nav-actions">
+            <a href="login.html" class="nav-pill">Login</a>
+            <a href="wishlist.html" class="nav-pill">Wishlist <span id="wishlistCount">0</span></a>
+            <a href="orders.html" class="nav-pill">Orders</a>
+            <a href="cart.html" class="cart-btn">Cart <span id="cartCount">0</span></a>
+        </div>
+
+        <div class="nav-links" id="navLinks">
+            <a href="index.html#fashion">Fashion</a>
+            <a href="index.html#electronics">Electronics</a>
+            <a href="index.html#beauty">Beauty</a>
+            <a href="index.html#gaming">Gaming</a>
+            <a href="index.html#luxury">Luxury</a>
+            <a href="index.html#ai">AI Assistant</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="wishlist-page">
+            <h1>My Wishlist</h1>
+            <p class="subtitle" id="wishlistSubtitle">Your saved items</p>
+
+            <div class="wishlist-grid" id="wishlistGrid">
+                <!-- Wishlist items will be rendered here -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>
+            <a href="index.html" class="logo">AVENOR</a>
+            <p>AI powered marketplace for smarter shopping, better comparison, and personalized product discovery.</p>
+        </div>
+        <div class="footer-links">
+            <a href="login.html">Login</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="orders.html">Orders</a>
+            <a href="support.html">Support</a>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="utils.js"></script>
+    <script src="products.js"></script>
+    <script src="cart.js"></script>
+    <script src="wishlist.js"></script>
+    <script src="search.js"></script>
+    <script src="ai.js"></script>
+    <script src="compare.js"></script>
+    <script src="checkout.js"></script>
+    <script src="payment.js"></script>
+    <script src="success.js"></script>
+    <script src="filters.js"></script>
+    <script src="animations.js"></script>
+    <script src="threeScene.js"></script>
+    <script src="app.js"></script>
+    <script>
+        setTimeout(renderWishlist, 450);
+
+        function renderWishlist() {
+            const container = document.getElementById('wishlistGrid');
+            const subtitle = document.getElementById('wishlistSubtitle');
+
+            if (wishlist.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-wishlist">
+                        <div class="icon">❤️</div>
+                        <h2>Your Wishlist is Empty</h2>
+                        <p>Start saving your favorite products!</p>
+                        <a href="index.html" class="shop-btn">Browse Products</a>
+                    </div>
+                `;
+                subtitle.textContent = 'No items saved yet';
+                return;
+            }
+
+            subtitle.textContent = `You have ${wishlist.length} items in your wishlist`;
+
+            const wishlistProducts = allProducts.filter(p => wishlist.includes(p.id));
+
+            container.innerHTML = wishlistProducts.map(product => `
+                <article class="product-card tilt-card reveal">
+                    <div class="product-image">
+                        <span class="discount-badge">${product.discount}</span>
+                        <button class="wishlist active" onclick="toggleWishlist(${product.id});renderWishlist();" 
+                                aria-label="Remove from wishlist">♥</button>
+                        <img src="${product.image}" alt="${product.name}" style="width:100%;height:200px;object-fit:cover;"
+                             onerror="this.src='https://via.placeholder.com/300x200/5b101b/ffffff?text=${encodeURIComponent(product.name)}'">
+                    </div>
+                    <div class="product-info">
+                        <p class="label">${product.category}</p>
+                        <h3 onclick="goToProduct(${product.id})" style="cursor:pointer;">${product.name}</h3>
+                        <p class="rating">★ ${product.rating} rating</p>
+                        <div class="price-row">
+                            <strong>₹${product.price.toLocaleString()}</strong>
+                            <button onclick="addToCart(${product.id});showNotification('Added to cart!');">Add</button>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

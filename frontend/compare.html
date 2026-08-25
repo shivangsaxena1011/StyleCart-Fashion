@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Products | Avenor</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .compare-page {
+            padding: 40px 6vw 80px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .compare-page h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .compare-subtitle {
+            color: var(--muted);
+            margin-bottom: 30px;
+        }
+
+        .compare-grid-wrapper {
+            overflow-x: auto;
+            margin-top: 30px;
+        }
+
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 200px repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            min-width: 700px;
+        }
+
+        .compare-cell {
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            word-break: break-word;
+        }
+
+        .compare-cell.label {
+            font-weight: 700;
+            color: var(--muted);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .compare-cell.product-image-cell {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .compare-cell.product-image-cell img {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+        }
+
+        .compare-cell.product-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .compare-cell.product-price {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--maroon-light);
+            text-align: center;
+        }
+
+        .compare-cell.product-rating {
+            text-align: center;
+            color: #ffd700;
+        }
+
+        .compare-cell .remove-btn {
+            background: none;
+            border: none;
+            color: #ff4444;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 4px 12px;
+            border-radius: 999px;
+            transition: 0.2s ease;
+        }
+
+        .compare-cell .remove-btn:hover {
+            background: rgba(255,68,68,0.1);
+        }
+
+        .comparison-analysis {
+            margin-top: 40px;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .comparison-analysis h2 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+        }
+
+        .comparison-analysis .analysis-text {
+            color: var(--muted);
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .comparison-analysis .analysis-loading {
+            color: var(--muted);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .empty-compare {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-compare .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .empty-compare h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-compare p {
+            color: var(--muted);
+            margin-bottom: 30px;
+        }
+
+        .add-more-btn {
+            padding: 12px 30px;
+            border-radius: 999px;
+            background: var(--maroon-light);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-block;
+            transition: 0.25s ease;
+        }
+
+        .add-more-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(143,29,45,0.4);
+        }
+
+        .max-limit-warning {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,193,7,0.1);
+            border: 1px solid rgba(255,193,7,0.2);
+            border-radius: 12px;
+            color: #ffc107;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .compare-grid {
+                grid-template-columns: 150px repeat(auto-fit, minmax(180px, 1fr));
+                font-size: 0.9rem;
+                min-width: 500px;
+            }
+
+            .compare-cell.product-image-cell img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .compare-cell.product-price {
+                font-size: 1.1rem;
+            }
+
+            .compare-page h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .compare-grid {
+                grid-template-columns: 120px 1fr 1fr;
+                font-size: 0.8rem;
+                min-width: 380px;
+            }
+
+            .compare-cell {
+                padding: 10px 12px;
+            }
+
+            .compare-cell.product-image-cell img {
+                width: 70px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    <div class="page-glow"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">AVENOR</a>
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="search-box">
+            <select id="searchCategory">
+                <option value="all">All</option>
+                <option value="fashion">Fashion</option>
+                <option value="mobiles">Mobiles</option>
+                <option value="laptops">Laptops</option>
+                <option value="beauty">Beauty</option>
+                <option value="gaming">Gaming</option>
+                <option value="luxury">Luxury</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Search products...">
+            <button type="button" id="searchBtn">Search</button>
+        </div>
+        <div class="nav-actions">
+            <a href="login.html" class="nav-pill">Login</a>
+            <a href="wishlist.html" class="nav-pill">Wishlist <span id="wishlistCount">0</span></a>
+            <a href="cart.html" class="cart-btn">Cart <span id="cartCount">0</span></a>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html#fashion">Fashion</a>
+            <a href="index.html#electronics">Electronics</a>
+            <a href="index.html#beauty">Beauty</a>
+            <a href="index.html#gaming">Gaming</a>
+            <a href="index.html#luxury">Luxury</a>
+            <a href="#" onclick="toggleAIAssistant()">AI Assistant</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="compare-page">
+            <h1>Product Comparison</h1>
+            <p class="compare-subtitle" id="compareSubtitle">Compare products side by side</p>
+
+            <div id="compareContainer">
+                <!-- Products will be rendered here -->
+            </div>
+
+            <div class="comparison-analysis" id="analysisContainer">
+                <h2>AI Analysis</h2>
+                <div class="analysis-text" id="analysisText">
+                    Add products to compare and get AI-powered analysis.
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>
+            <a href="index.html" class="logo">AVENOR</a>
+            <p>AI powered marketplace for smarter shopping.</p>
+        </div>
+        <div class="footer-links">
+            <a href="login.html">Login</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="orders.html">Orders</a>
+            <a href="support.html">Support</a>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="utils.js"></script>
+    <script src="products.js"></script>
+    <script src="cart.js"></script>
+    <script src="wishlist.js"></script>
+    <script src="search.js"></script>
+    <script src="ai.js"></script>
+    <script src="compare.js"></script>
+    <script src="checkout.js"></script>
+    <script src="payment.js"></script>
+    <script src="success.js"></script>
+    <script src="filters.js"></script>
+    <script src="animations.js"></script>
+    <script src="threeScene.js"></script>
+    <script src="app.js"></script>
+    <script>
+        setTimeout(window.renderComparePage, 450);
+    </script>
+</body>
+</html>

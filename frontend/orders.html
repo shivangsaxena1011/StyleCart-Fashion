@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | Avenor</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .orders-page {
+            padding: 40px 6vw 80px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .orders-page h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .orders-page .subtitle {
+            color: var(--muted);
+            margin-bottom: 40px;
+        }
+
+        .order-card {
+            padding: 24px 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.03);
+            margin-bottom: 20px;
+            transition: 0.25s ease;
+        }
+
+        .order-card:hover {
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .order-header .order-id {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .order-header .order-date {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .order-status {
+            padding: 4px 16px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .order-status.delivered {
+            background: rgba(76,175,80,0.2);
+            color: #4caf50;
+        }
+
+        .order-status.shipped {
+            background: rgba(33,150,243,0.2);
+            color: #2196f3;
+        }
+
+        .order-status.processing {
+            background: rgba(255,193,7,0.2);
+            color: #ffc107;
+        }
+
+        .order-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .order-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .order-item .item-info {
+            flex: 1;
+        }
+
+        .order-item .item-info .name {
+            font-weight: 600;
+        }
+
+        .order-item .item-info .qty {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .order-item .item-price {
+            font-weight: 700;
+            color: var(--maroon-light);
+        }
+
+        .order-total {
+            text-align: right;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 1.1rem;
+        }
+
+        .order-total strong {
+            font-size: 1.3rem;
+            color: var(--maroon-light);
+        }
+
+        .empty-orders {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-orders .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .empty-orders h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-orders p {
+            color: var(--muted);
+            margin-bottom: 30px;
+        }
+
+        .empty-orders .shop-btn {
+            padding: 14px 40px;
+            border-radius: 999px;
+            background: var(--maroon-light);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-block;
+            transition: 0.25s ease;
+        }
+
+        .empty-orders .shop-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(143,29,45,0.4);
+        }
+
+        @media (max-width: 576px) {
+            .orders-page h1 {
+                font-size: 2rem;
+            }
+
+            .order-card {
+                padding: 16px;
+            }
+
+            .order-header {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .order-item {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    <div class="page-glow"></div>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">AVENOR</a>
+
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="search-box">
+            <select id="searchCategory" aria-label="Search category">
+                <option value="all">All</option>
+                <option value="fashion">Fashion</option>
+                <option value="mobiles">Mobiles</option>
+                <option value="laptops">Laptops</option>
+                <option value="beauty">Beauty</option>
+                <option value="gaming">Gaming</option>
+                <option value="luxury">Luxury</option>
+                <option value="electronics">Electronics</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Search products, brands, categories">
+            <button type="button" id="searchBtn">Search</button>
+        </div>
+
+        <div class="nav-actions">
+            <a href="login.html" class="nav-pill">Login</a>
+            <a href="wishlist.html" class="nav-pill">Wishlist <span id="wishlistCount">0</span></a>
+            <a href="orders.html" class="nav-pill">Orders</a>
+            <a href="cart.html" class="cart-btn">Cart <span id="cartCount">0</span></a>
+        </div>
+
+        <div class="nav-links" id="navLinks">
+            <a href="index.html#fashion">Fashion</a>
+            <a href="index.html#electronics">Electronics</a>
+            <a href="index.html#beauty">Beauty</a>
+            <a href="index.html#gaming">Gaming</a>
+            <a href="index.html#luxury">Luxury</a>
+            <a href="index.html#ai">AI Assistant</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="orders-page">
+            <h1>My Orders</h1>
+            <p class="subtitle">Track your purchases</p>
+
+            <div id="ordersList">
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-id">#ORD-2024-001</span>
+                        <span class="order-date">December 15, 2024</span>
+                        <span class="order-status delivered">Delivered</span>
+                    </div>
+                    <div class="order-items">
+                        <div class="order-item">
+                            <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9" alt="iPhone">
+                            <div class="item-info">
+                                <div class="name">iPhone 17 Pro Max</div>
+                                <div class="qty">Qty: 1</div>
+                            </div>
+                            <div class="item-price">₹129,900</div>
+                        </div>
+                    </div>
+                    <div class="order-total">
+                        Total: <strong>₹129,900</strong>
+                    </div>
+                </div>
+
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-id">#ORD-2024-002</span>
+                        <span class="order-date">December 10, 2024</span>
+                        <span class="order-status shipped">Shipped</span>
+                    </div>
+                    <div class="order-items">
+                        <div class="order-item">
+                            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff" alt="Sneakers">
+                            <div class="item-info">
+                                <div class="name">Nike Air Max 2025</div>
+                                <div class="qty">Qty: 2</div>
+                            </div>
+                            <div class="item-price">₹23,998</div>
+                        </div>
+                    </div>
+                    <div class="order-total">
+                        Total: <strong>₹23,998</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>
+            <a href="index.html" class="logo">AVENOR</a>
+            <p>AI powered marketplace for smarter shopping, better comparison, and personalized product discovery.</p>
+        </div>
+        <div class="footer-links">
+            <a href="login.html">Login</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="orders.html">Orders</a>
+            <a href="support.html">Support</a>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

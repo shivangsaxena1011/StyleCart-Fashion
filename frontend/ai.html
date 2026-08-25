@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avenor AI Fashion Studio | Next-Gen Style Engine</title>
+    <meta name="description" content="Design outfits, get size predictions, try-on clothes virtually, and receive personalized styling advice from Avenor's advanced AI.">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-glow"></div>
+
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <div class="nav-top-row" style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:20px; flex-wrap:nowrap;">
+            <a href="index.html" class="logo">AVENOR</a>
+
+            <div class="nav-links" style="border-top:none; padding-top:0;">
+                <a href="index.html#fashion">Fashion</a>
+                <a href="index.html#electronics">Electronics</a>
+                <a href="index.html#luxury">Luxury</a>
+                <a href="ai.html" class="active">AI Fashion Hub</a>
+            </div>
+
+            <div class="nav-actions">
+                <a href="wishlist.html" class="nav-pill">Wishlist <span id="wishlistCount">0</span></a>
+                <a href="cart.html" class="cart-btn">Cart <span id="cartCount">0</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="studio-container">
+        <!-- Sidebar Navigation -->
+        <aside class="studio-sidebar">
+            <div class="sidebar-header">
+                <span class="ai-badge">AI ENABLED</span>
+                <h3>Fashion Studio</h3>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <button class="studio-tab active" id="tab-stylist" onclick="switchTab('stylist')">
+                    <span class="tab-icon">🤖</span> AI Personal Stylist 2.0
+                </button>
+                <button class="studio-tab" id="tab-agent" onclick="switchTab('agent')">
+                    <span class="tab-icon">🕵️‍♂️</span> AI Shopping Agent
+                </button>
+                <button class="studio-tab" id="tab-styledna" onclick="switchTab('styledna')">
+                    <span class="tab-icon">🧬</span> Visual Style DNA
+                </button>
+                <button class="studio-tab" id="tab-builder" onclick="switchTab('builder')">
+                    <span class="tab-icon">📐</span> AI Outfit Builder
+                </button>
+                <button class="studio-tab" id="tab-capsule" onclick="switchTab('capsule')">
+                    <span class="tab-icon">🧳</span> Capsule Wardrobe
+                </button>
+                <button class="studio-tab" id="tab-steal" onclick="switchTab('steal')">
+                    <span class="tab-icon">✨</span> Steal This Look
+                </button>
+                <button class="studio-tab" id="tab-tryon" onclick="switchTab('tryon')">
+                    <span class="tab-icon">🧥</span> Virtual Try-On 2.0
+                </button>
+                <button class="studio-tab" id="tab-prediction" onclick="switchTab('prediction')">
+                    <span class="tab-icon">⚖️</span> Size & Fit AI
+                </button>
+                <button class="studio-tab" id="tab-wardrobe" onclick="switchTab('wardrobe')">
+                    <span class="tab-icon">👕</span> AI Digital Wardrobe
+                </button>
+                <button class="studio-tab" id="tab-trends" onclick="switchTab('trends')">
+                    <span class="tab-icon">📈</span> Trend Intelligence
+                </button>
+                <button class="studio-tab" id="tab-search" onclick="switchTab('search')">
+                    <span class="tab-icon">📸</span> AI Visual Search
+                </button>
+                <button class="studio-tab" id="tab-community" onclick="switchTab('community')">
+                    <span class="tab-icon">👥</span> Fashion Community
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Right Content Workspaces -->
+        <section class="studio-workspace">
+            
+            <!-- 1. AI Stylist Tab -->
+            <div class="tab-content active" id="stylist">
+                <div class="tab-header">
+                    <h2>🤖 AI Personal Stylist 2.0</h2>
+                    <p>Provide your occasion, location, weather, budget, and formality. Avenor AI Stylist 2.0 synthesizes complete looks considering your catalog & digital wardrobe.</p>
+                </div>
+                
+                <div class="chat-container">
+                    <div class="chat-messages" id="aiStylistChat">
+                        <div class="chat-bubble bot">
+                            👋 Welcome to Avenor AI Stylist 2.0! Describe your occasion, desired aesthetic, or budget constraints (e.g. <em>"I need an elegant minimal outfit for a dinner date under ₹15,000"</em>).
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-row">
+                        <div style="position:relative; flex:1; display:flex; align-items:center;">
+                            <input type="text" id="aiStylistInput" placeholder="Describe your style request... (e.g. Minimalist summer wedding guest outfit)" style="width:100%; padding-right:45px;">
+                            <button type="button" id="stylistVoiceBtn" onclick="startStylistVoiceInput()" style="position:absolute; right:15px; background:none; border:none; color:var(--muted); font-size:1.25rem; cursor:pointer;" title="Voice Type">🎤</button>
+                        </div>
+                        <div class="budget-selector">
+                            <label for="aiStylistBudget">Max Budget (₹):</label>
+                            <input type="number" id="aiStylistBudget" value="15000" placeholder="Budget limit">
+                        </div>
+                        <button class="btn primary" onclick="sendStylistMessage()">Stylize Look</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1B. AI Shopping Agent Concierge -->
+            <div class="tab-content" id="agent">
+                <div class="tab-header">
+                    <h2>🕵️‍♂️ AI Shopping Agent Concierge</h2>
+                    <p>Provide natural-language shopping goals. The autonomous agent searches the catalog, filters constraints, checks wardrobe compatibility, and builds optimized options.</p>
+                </div>
+
+                <div class="agent-workspace glassmorphism" style="padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02);">
+                    <div style="display:flex; gap:15px; margin-bottom:25px;">
+                        <input type="text" id="agentGoalInput" placeholder="e.g. Find me a complete date-night outfit under ₹12,000 that works with black sneakers" style="flex:1; padding:15px 20px; border-radius:14px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.1); color:white; font-size:1rem;">
+                        <button class="btn primary" onclick="runShoppingAgent()" style="padding:15px 30px;">Deploy Agent</button>
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-bottom:30px; flex-wrap:wrap;">
+                        <span style="color:var(--muted); font-size:0.85rem; align-self:center;">Try Prompt:</span>
+                        <button class="mini-tag-btn" onclick="document.getElementById('agentGoalInput').value=this.textContent; runShoppingAgent()" style="padding:6px 14px; border-radius:99px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:var(--muted); cursor:pointer;">Find a date-night outfit under ₹10,000</button>
+                        <button class="mini-tag-btn" onclick="document.getElementById('agentGoalInput').value=this.textContent; runShoppingAgent()" style="padding:6px 14px; border-radius:99px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:var(--muted); cursor:pointer;">Need 5 outfits for a 5-day Paris trip</button>
+                        <button class="mini-tag-btn" onclick="document.getElementById('agentGoalInput').value=this.textContent; runShoppingAgent()" style="padding:6px 14px; border-radius:99px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:var(--muted); cursor:pointer;">Find a black blazer that works with my wardrobe</button>
+                    </div>
+
+                    <div id="agentResultsContainer" style="display:none;"></div>
+                </div>
+            </div>
+
+            <!-- 1C. Visual Style DNA Profile -->
+            <div class="tab-content" id="styledna">
+                <div class="tab-header">
+                    <h2>🧬 Visual Style DNA & Preference Profile</h2>
+                    <p>Your persistent AI fashion identity based on your browsing, likes, purchases, and wardrobe compatibility.</p>
+                </div>
+
+                <div class="styledna-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:30px;">
+                    <div class="glassmorphism" style="padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); text-align:center;">
+                        <span class="ai-badge" style="margin-bottom:15px;">AI ARCHETYPE</span>
+                        <h3 id="dnaArchetype" style="font-size:2rem; color:white; margin:10px 0;">Modern Minimalist</h3>
+                        <p style="color:var(--muted); font-size:0.9rem; margin-bottom:25px;">Preference profile automatically refines with each outfit interaction.</p>
+
+                        <div style="text-align:left; display:flex; flex-direction:column; gap:15px; margin-top:20px;">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
+                                    <span>Minimalism</span>
+                                    <strong style="color:var(--maroon-light);">91%</strong>
+                                </div>
+                                <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:99px; overflow:hidden;">
+                                    <div style="width:91%; height:100%; background:linear-gradient(90deg, #8f1d2d, #ff4d6d);"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
+                                    <span>Formal Suiting</span>
+                                    <strong style="color:var(--maroon-light);">84%</strong>
+                                </div>
+                                <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:99px; overflow:hidden;">
+                                    <div style="width:84%; height:100%; background:linear-gradient(90deg, #8f1d2d, #ff4d6d);"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
+                                    <span>Classic Heritage</span>
+                                    <strong style="color:var(--maroon-light);">78%</strong>
+                                </div>
+                                <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:99px; overflow:hidden;">
+                                    <div style="width:78%; height:100%; background:linear-gradient(90deg, #8f1d2d, #ff4d6d);"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
+                                    <span>Streetwear</span>
+                                    <strong style="color:var(--maroon-light);">62%</strong>
+                                </div>
+                                <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:99px; overflow:hidden;">
+                                    <div style="width:62%; height:100%; background:linear-gradient(90deg, #8f1d2d, #ff4d6d);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glassmorphism" style="padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02);">
+                        <h4 style="font-size:1.2rem; margin-bottom:20px; color:white;">Palette & Preference Controls</h4>
+                        
+                        <div style="margin-bottom:20px;">
+                            <label style="color:var(--muted); font-size:0.85rem; display:block; margin-bottom:8px;">Preferred Palette:</label>
+                            <div style="display:flex; gap:10px;">
+                                <span style="padding:6px 14px; border-radius:99px; background:#121212; border:1px solid rgba(255,255,255,0.2); font-size:0.8rem; color:white;">Onyx Black</span>
+                                <span style="padding:6px 14px; border-radius:99px; background:#F5F5F7; border:1px solid rgba(255,255,255,0.2); font-size:0.8rem; color:#121212;">Optic White</span>
+                                <span style="padding:6px 14px; border-radius:99px; background:#1E293B; border:1px solid rgba(255,255,255,0.2); font-size:0.8rem; color:white;">Midnight Navy</span>
+                                <span style="padding:6px 14px; border-radius:99px; background:#D4A373; border:1px solid rgba(255,255,255,0.2); font-size:0.8rem; color:black;">Sandy Beige</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom:25px;">
+                            <label style="color:var(--muted); font-size:0.85rem; display:block; margin-bottom:8px;">Fit Profile:</label>
+                            <span style="font-weight:700; color:white; font-size:1.05rem;">Regular / Relaxed Drop-Shoulder Tailoring</span>
+                        </div>
+
+                        <div style="padding:15px; border-radius:12px; background:rgba(143,29,45,0.1); border:1px solid rgba(143,29,45,0.3); margin-bottom:20px;">
+                            <h5 style="margin:0 0 5px 0; color:white;">🧠 Controlled Preference Memory</h5>
+                            <p style="margin:0; font-size:0.8rem; color:var(--muted);">Stored non-sensitive preferences improve AI recommendations continuously.</p>
+                        </div>
+
+                        <button class="btn secondary" onclick="resetAIMemory()" style="width:100%; padding:10px;">Reset AI Personalization Memory</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1D. Capsule Wardrobe Studio -->
+            <div class="tab-content" id="capsule">
+                <div class="tab-header">
+                    <h2>🧳 AI Capsule Wardrobe Generator</h2>
+                    <p>Build a minimal collection of highly versatile, interchangeable garments maximizing unique outfit combinations per ₹ spent.</p>
+                </div>
+
+                <div class="capsule-controls glassmorphism" style="padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); margin-bottom:30px;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr 150px; gap:20px; align-items:end;">
+                        <div>
+                            <label for="capsuleBudgetInput" style="color:var(--muted); font-size:0.85rem; display:block; margin-bottom:8px;">Target Budget (₹):</label>
+                            <input type="number" id="capsuleBudgetInput" value="30000" style="width:100%; padding:12px; border-radius:12px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.1); color:white;">
+                        </div>
+                        <div>
+                            <label for="capsuleSeasonSelect" style="color:var(--muted); font-size:0.85rem; display:block; margin-bottom:8px;">Season / Setting:</label>
+                            <select id="capsuleSeasonSelect" style="width:100%; padding:12px; border-radius:12px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.1); color:white;">
+                                <option value="All Season">All Season Versatile</option>
+                                <option value="Summer">Summer Lightweight</option>
+                                <option value="Winter">Winter Layering</option>
+                                <option value="Business">Executive Travel</option>
+                            </select>
+                        </div>
+                        <button class="btn primary" onclick="generateCapsuleWardrobe()" style="padding:12px 20px;">Generate Capsule</button>
+                    </div>
+                </div>
+
+                <div id="capsuleResultsContainer"></div>
+            </div>
+
+            <!-- 1E. Steal This Look -->
+            <div class="tab-content" id="steal">
+                <div class="tab-header">
+                    <h2>✨ Steal This Look</h2>
+                    <p>Upload any street outfit photo. Avenor AI identifies individual garment elements and recreates the look across Inspired, Match, Budget, and Premium price tiers.</p>
+                </div>
+
+                <div class="steal-workspace glassmorphism" style="padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); text-align:center;">
+                    <div class="image-upload-zone" onclick="document.getElementById('stealFileInput').click()" style="border:2px dashed rgba(255,255,255,0.15); border-radius:16px; padding:40px 20px; background:rgba(255,255,255,0.01); cursor:pointer; margin-bottom:20px;">
+                        <span style="font-size:3rem; display:block; margin-bottom:15px;">📸</span>
+                        <span style="font-weight:700; display:block; margin-bottom:5px; color:white;">Upload Outfit Photo to Recreate</span>
+                        <span style="color:var(--muted); font-size:0.8rem;">Supports JPG, PNG</span>
+                        <input type="file" id="stealFileInput" accept="image/*" style="display:none;" onchange="runStealThisLook(event)">
+                    </div>
+
+                    <div id="stealResultsContainer" style="display:none; text-align:left; margin-top:30px;"></div>
+                </div>
+            </div>
+
+            <!-- 1F. Trend Intelligence -->
+            <div class="tab-content" id="trends">
+                <div class="tab-header">
+                    <h2>📈 Fashion Trend Intelligence Engine</h2>
+                    <p>Real-time analytics analyzing search velocity, wishlist saves, and customer outfit interactions to uncover active fashion trends.</p>
+                </div>
+
+                <div id="trendAnalyticsContainer" style="display:grid; grid-template-columns:1fr 1fr; gap:30px;"></div>
+            </div>
+
+            <!-- 2. Outfit Builder & Fashion Score -->
+            <div class="tab-content" id="builder">
+                <div class="tab-header">
+                    <h2>📐 AI Outfit Builder & Score Analyzer</h2>
+                    <p>Design your custom outfit by selecting clothes from our catalog. Our AI Fashion Score analyzer compiles compatibility in real-time.</p>
+                </div>
+                
+                <div class="builder-columns">
+                    <!-- Dressing Canvas -->
+                    <div class="builder-canvas">
+                        <div class="canvas-grid">
+                            <div class="outfit-slot" id="slot-upper" onclick="removeOutfitItem('upper')">
+                                <div class="outfit-slot-empty">
+                                    <span class="slot-icon">🧥</span>
+                                    <span class="slot-label">UPPERWEAR</span>
+                                </div>
+                            </div>
+                            <div class="outfit-slot" id="slot-lower" onclick="removeOutfitItem('lower')">
+                                <div class="outfit-slot-empty">
+                                    <span class="slot-icon">👖</span>
+                                    <span class="slot-label">LOWERWEAR</span>
+                                </div>
+                            </div>
+                            <div class="outfit-slot" id="slot-shoes" onclick="removeOutfitItem('shoes')">
+                                <div class="outfit-slot-empty">
+                                    <span class="slot-icon">👟</span>
+                                    <span class="slot-label">FOOTWEAR</span>
+                                </div>
+                            </div>
+                            <div class="outfit-slot" id="slot-accessory" onclick="removeOutfitItem('accessory')">
+                                <div class="outfit-slot-empty">
+                                    <span class="slot-icon">🕶</span>
+                                    <span class="slot-label">ACCESSORIES</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Fashion Score Panel -->
+                    <div class="builder-scorecard">
+                        <div class="score-radial-container">
+                            <svg class="score-ring-svg" width="120" height="120">
+                                <circle class="ring-track" cx="60" cy="60" r="50"></circle>
+                                <circle class="ring-fill" id="aiScoreRing" cx="60" cy="60" r="50" style="stroke-dashoffset: 314;"></circle>
+                            </svg>
+                            <div class="score-center">
+                                <span class="score-val" id="aiScoreVal">0</span>
+                                <span class="score-lbl">AI SCORE</span>
+                            </div>
+                        </div>
+
+                        <div class="score-dimensions">
+                            <div class="metric-row">
+                                <span>Color Harmony</span>
+                                <div class="metric-track">
+                                    <div class="metric-bar" id="metric-harmony" style="width: 0%;"></div>
+                                </div>
+                                <span class="metric-value" id="metric-harmony-val">0%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span>Trend Alignment</span>
+                                <div class="metric-track">
+                                    <div class="metric-bar" id="metric-trend" style="width: 0%;"></div>
+                                </div>
+                                <span class="metric-value" id="metric-trend-val">0%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span>Occasion Fit</span>
+                                <div class="metric-track">
+                                    <div class="metric-bar" id="metric-occasion" style="width: 0%;"></div>
+                                </div>
+                                <span class="metric-value" id="metric-occasion-val">0%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span>Confidence Index</span>
+                                <div class="metric-track">
+                                    <div class="metric-bar" id="metric-confidence" style="width: 0%;"></div>
+                                </div>
+                                <span class="metric-value" id="metric-confidence-val">0%</span>
+                            </div>
+                        </div>
+
+                        <div class="ai-suggestions-box">
+                            <h4>💡 AI Stylist Suggestions:</h4>
+                            <ul class="tips-list" id="aiStylistTips">
+                                <li>Add items to the outfit canvas to compile your AI fashion score metrics.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="catalog-section">
+                    <h3>🛍 Add Items from Avenor Catalog</h3>
+                    <div class="builder-catalog-grid" id="builderCatalog"></div>
+                </div>
+            </div>
+
+            <!-- 3. AI Virtual Try-On -->
+            <div class="tab-content" id="tryon">
+                <div class="tab-header">
+                    <h2>🧥 AI Virtual Try-On</h2>
+                    <p>Select your model avatar and choose catalog clothes to visually render the outfit styling in real-time.</p>
+                </div>
+                
+                <div class="tryon-layout">
+                    <div class="tryon-view-container" style="display:flex; flex-direction:column; gap:15px;">
+                        <div class="tryon-view" id="tryonDisplay">
+                            <div class="tryon-laser" id="tryonScanBar"></div>
+                            <img src="" id="tryonClothingOverlay" class="clothing-layer" alt="Tryon Clothing Layer" style="top:15%; left:20%; width:60%; height:60%;">
+                        </div>
+                        
+                        <!-- Overlay adjustment sliders -->
+                        <div class="glassmorphism" style="padding:15px 20px; border-radius:16px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.01);">
+                            <h5 style="margin:0 0 10px 0; font-size:0.85rem; color:white; font-weight:800;">Overlay Fine-tuning</h5>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px 30px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <label style="font-size:0.75rem; color:var(--muted);">Scale Fit:</label>
+                                    <input type="range" id="tryonScale" min="30" max="100" value="60" oninput="adjustTryOnOverlay()" style="width:100px;">
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <label style="font-size:0.75rem; color:var(--muted);">Opacity Blend:</label>
+                                    <input type="range" id="tryonOpacity" min="20" max="100" value="85" oninput="adjustTryOnOverlay()" style="width:100px;">
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <label style="font-size:0.75rem; color:var(--muted);">Vertical Shift:</label>
+                                    <input type="range" id="tryonYShift" min="0" max="80" value="15" oninput="adjustTryOnOverlay()" style="width:100px;">
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <label style="font-size:0.75rem; color:var(--muted);">Horizontal Shift:</label>
+                                    <input type="range" id="tryonXShift" min="0" max="80" value="20" oninput="adjustTryOnOverlay()" style="width:100px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tryon-controls">
+                        <h4>1. Select Model Avatar</h4>
+                        <div class="avatar-row">
+                            <button class="avatar-btn active" id="avatar-model1" onclick="selectTryOnAvatar('model1', event)">Model A (Female)</button>
+                            <button class="avatar-btn" id="avatar-model2" onclick="selectTryOnAvatar('model2', event)">Model B (Male)</button>
+                            <button class="avatar-btn" id="avatar-model3" onclick="selectTryOnAvatar('model3', event)">Model C (Neutral)</button>
+                        </div>
+                        
+                        <h4 style="margin-top:20px;">Or Upload Your Own Photo</h4>
+                        <div class="selfie-upload-zone" style="margin-top:10px; padding:15px; border:1px dashed rgba(255,255,255,0.15); border-radius:12px; background:rgba(255,255,255,0.02); text-align:center;">
+                            <input type="file" id="tryonSelfieInput" accept="image/*" style="display:none;" onchange="handleTryOnSelfieUpload(event)">
+                            <button class="btn secondary" onclick="document.getElementById('tryonSelfieInput').click()" style="padding:8px 16px; font-size:0.8rem; width:100%; cursor:pointer;">📷 Upload Selfie / Photo</button>
+                        </div>
+                        
+                        <h4 style="margin-top:25px;">2. Click Clothes to Try On</h4>
+                        <div class="tryon-catalog-list" id="tryonCatalog"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. AI Size Predictor -->
+            <div class="tab-content" id="prediction">
+                <div class="tab-header">
+                    <h2>⚖️ AI Size Predictor</h2>
+                    <p>No tape measurements needed. Enter your basic details and Avenor's custom fitting model will predict your size profile.</p>
+                </div>
+                
+                <div class="predictor-card">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="sizeHeight">Height (cm):</label>
+                            <input type="number" id="sizeHeight" value="175" min="120" max="230">
+                        </div>
+                        <div class="form-group">
+                            <label for="sizeWeight">Weight (kg):</label>
+                            <input type="number" id="sizeWeight" value="70" min="30" max="150">
+                        </div>
+                        <div class="form-group">
+                            <label for="sizeFit">Fit Preference:</label>
+                            <select id="sizeFit">
+                                <option value="regular">Regular Fit</option>
+                                <option value="slim">Slim Fit</option>
+                                <option value="loose">Loose / Oversized</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="btn primary" id="predictSizeBtn">Predict Fitting Size</button>
+                    
+                    <div class="prediction-results" id="sizeResultBox" style="display: none;"></div>
+                </div>
+            </div>
+
+            <!-- 5. AI Wardrobe -->
+            <div class="tab-content" id="wardrobe">
+                <div class="tab-header">
+                    <h2>👕 AI Digital Wardrobe</h2>
+                    <p>Log items you already own. The AI Wardrobe Engine generates smart recommendations to pair them with Avenor items.</p>
+                </div>
+                
+                <div class="wardrobe-section">
+                    <div class="wardrobe-form" style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:30px; margin-bottom: 25px;">
+                        <div>
+                            <h4>Add Owned Clothing:</h4>
+                            <div class="form-row" style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+                                <input type="text" id="wardrobeItemName" placeholder="Item name (e.g. Linen Blazer)" style="flex:1;">
+                                <input type="text" id="wardrobeItemColor" placeholder="Color" style="flex:1;">
+                                <input type="text" id="wardrobeItemMaterial" placeholder="Material" style="flex:1;">
+                                <button class="btn secondary" onclick="addToWardrobe()">Add to Closet</button>
+                            </div>
+                        </div>
+                        
+                        <div class="wardrobe-scan-box" style="padding:15px; border:2px dashed rgba(255,255,255,0.12); border-radius:16px; background:rgba(255,255,255,0.01); text-align:center; position:relative; overflow:hidden;">
+                            <input type="file" id="wardrobeScanInput" accept="image/*" style="display:none;" onchange="handleWardrobeScanUpload(event)">
+                            <span style="font-size:1.6rem; display:block; margin-bottom:5px;">📸</span>
+                            <h4 style="margin:0 0 5px 0; font-size:0.9rem; color:white;">Or Scan Closet via Photo</h4>
+                            <p style="color:var(--muted); font-size:0.75rem; margin-bottom:10px;">AI will auto-detect color & fabric to log the item.</p>
+                            <button class="btn primary" onclick="document.getElementById('wardrobeScanInput').click()" style="padding:6px 15px; font-size:0.75rem; width:100%; cursor:pointer;">Select & Scan Image</button>
+                            
+                            <div class="scan-overlay-bar" id="wardrobeScanBar" style="display:none; position:absolute; top:0; left:0; right:0; height:3px; background:var(--maroon-light); box-shadow:0 0 10px var(--maroon-light); animation:scanLaser 2s linear infinite;"></div>
+                        </div>
+                    </div>
+
+                    <div class="wardrobe-split">
+                        <div class="wardrobe-closet">
+                            <h4>My Owned Closet:</h4>
+                            <div class="wardrobe-list" id="wardrobeList"></div>
+                        </div>
+                        
+                        <div class="wardrobe-suggestions">
+                            <h4>💡 AI Outfit Combinations:</h4>
+                            <button class="btn primary" onclick="getWardrobeSuggestions()" style="margin-bottom:15px;">Generate Pairing Recommendations</button>
+                            <div class="wardrobe-suggestions-grid" id="wardrobeSuggestionsGrid">
+                                <p class="no-items">Click the button above to generate matching combinations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. AI Weather-Based Styling -->
+            <div class="tab-content" id="weather">
+                <div class="tab-header">
+                    <h2>🌤 AI Weather-Based Styling</h2>
+                    <p>Sync current conditions and temperature details to auto-generate styled clothes tailored for the weather.</p>
+                </div>
+                
+                <div class="weather-controls">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="weatherTempSlider">Simulated Temperature (°C):</label>
+                            <input type="range" id="weatherTempSlider" min="5" max="42" value="28" oninput="document.getElementById('weatherTempVal').textContent = this.value + '°C'">
+                            <span id="weatherTempVal" class="slider-val">28°C</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="weatherCondition">Weather Condition:</label>
+                            <select id="weatherCondition">
+                                <option value="Sunny">Sunny / Dry</option>
+                                <option value="Rainy">Rainy / Humid</option>
+                                <option value="Cold">Chilly / Windy</option>
+                                <option value="Snowy">Snowy / Freezing</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="btn primary" onclick="triggerWeatherStyling()">Style for Weather</button>
+                    
+                    <div class="weather-results" id="weatherRecommendationResult"></div>
+                </div>
+            </div>
+
+            <!-- 7. Fashion GPT -->
+            <div class="tab-content" id="gpt">
+                <div class="tab-header">
+                    <h2>🧠 Fashion GPT Advisor</h2>
+                    <p>Ask Avenor's custom GPT model anything about dressing standards, trend rules, color pairings, or styling guide definitions.</p>
+                </div>
+                
+                <div class="gpt-workspace">
+                    <div class="gpt-input-group">
+                        <input type="text" id="gptQuestionInput" placeholder="Ask Fashion GPT... (e.g. What matches white sneakers?)">
+                        <button class="btn primary" onclick="askFashionGPT(document.getElementById('gptQuestionInput').value)">Ask GPT</button>
+                    </div>
+
+                    <div class="gpt-preloaded">
+                        <span>Suggested Queries:</span>
+                        <button onclick="document.getElementById('gptQuestionInput').value = this.textContent; askFashionGPT(this.textContent)">What matches white sneakers?</button>
+                        <button onclick="document.getElementById('gptQuestionInput').value = this.textContent; askFashionGPT(this.textContent)">Is velvet blazer out of style?</button>
+                        <button onclick="document.getElementById('gptQuestionInput').value = this.textContent; askFashionGPT(this.textContent)">Dressing tips for tall men</button>
+                    </div>
+
+                    <div class="gpt-response-area" id="gptResponseBox"></div>
+                </div>
+            </div>
+
+            <!-- 8. AI Occasions -->
+            <div class="tab-content" id="occasions">
+                <div class="tab-header">
+                    <h2>🌍 AI Occasion Outfit Generator</h2>
+                    <p>One-click occasion profiles. Instantly populate the outfit builder canvas with optimized luxury matches.</p>
+                </div>
+                
+                <div class="occasions-grid">
+                    <div class="occasion-option-card" onclick="generateOccasionOutfit('date')">
+                        <div class="occ-icon">🍷</div>
+                        <h4>Date Night</h4>
+                        <p>Romantic, sophisticated velvet styling with premium timepiece anchors.</p>
+                    </div>
+                    <div class="occasion-option-card" onclick="generateOccasionOutfit('office')">
+                        <div class="occ-icon">💼</div>
+                        <h4>Office Wear</h4>
+                        <p>Sharp blazers and clean formal essentials optimized for smart-casual styling.</p>
+                    </div>
+                    <div class="occasion-option-card" onclick="generateOccasionOutfit('wedding')">
+                        <div class="occ-icon">💍</div>
+                        <h4>Wedding Ceremony</h4>
+                        <p>Elite premium jackets, luxury watches, and leather boots to steal the show.</p>
+                    </div>
+                    <div class="occasion-option-card" onclick="generateOccasionOutfit('gym')">
+                        <div class="occ-icon">💪</div>
+                        <h4>Active / Gym</h4>
+                        <p>Comfort-fit cargoes, breathable tees, and React foam running sneakers.</p>
+                    </div>
+                    <div class="occasion-option-card" onclick="generateOccasionOutfit('airport')">
+                        <div class="occ-icon">✈️</div>
+                        <h4>Airport Travel</h4>
+                        <p>Oversized denim jacket layers and loose utility fits for ultimate transit comfort.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. AI Visual Search -->
+            <div class="tab-content" id="search">
+                <div class="tab-header">
+                    <h2>📸 AI Visual Search & Image Matcher</h2>
+                    <p>Upload style inspirations or click on our sample models below to let Avenor AI visually parse patterns and find matching catalog clothes.</p>
+                </div>
+                
+                <div class="visual-search-workspace">
+                    <div class="samples-gallery">
+                        <h4>Click Sample Outfit to Scan:</h4>
+                        <div class="samples-flex">
+                            <div class="sample-image-frame" onclick="triggerVisualSearch('outfit1')">
+                                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=300&q=80" alt="Streetwear Look">
+                                <span>Scan Streetwear</span>
+                            </div>
+                            <div class="sample-image-frame" onclick="triggerVisualSearch('outfit2')">
+                                <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=300&q=80" alt="Casual Office Look">
+                                <span>Scan Smart Casual</span>
+                            </div>
+                            <div class="sample-image-frame" onclick="triggerVisualSearch('outfit3')">
+                                <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=300&q=80" alt="Luxury Party Look">
+                                <span>Scan Party Look</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="visual-search-results" id="visualSearchResults"></div>
+                </div>
+            </div>
+
+            <!-- 10. Outfit Community Feed -->
+            <div class="tab-content" id="community">
+                <div class="tab-header">
+                    <h2>👥 Outfit Community Feed</h2>
+                    <p>Browse outfits shared by the Avenor style community. Click on creators' wardrobes to shop the exact combinations.</p>
+                </div>
+                
+                <div class="community-feed-grid" id="communityFeedGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:30px; margin-top:25px;">
+                    <!-- Community post cards load dynamically -->
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Global Notification/Cart scripts -->
+    <script src="utils.js"></script>
+    <script src="products.js"></script>
+    <script src="cart.js"></script>
+    <script src="wishlist.js"></script>
+    <script src="ai_fashion.js"></script>
+    <script src="animations.js"></script>
+    <script>
+        // Set initial virtual try-on model background
+        document.addEventListener("DOMContentLoaded", () => {
+            const canvas = document.getElementById("tryonDisplay");
+            if (canvas) {
+                canvas.style.backgroundImage = "url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80')";
+            }
+        });
+    </script>
+</body>
+</html>
