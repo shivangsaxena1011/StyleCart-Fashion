@@ -93,8 +93,32 @@ body::before {
         0 0 20px rgba(255, 255, 255, 0.25),
         0 0 38px rgba(143, 29, 45, 0.85);
     white-space: nowrap;
-    display: flex;
-    align-items: center;
+}
+
+.brand-group {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.brand-subtitle {
+    font-size: 0.65rem;
+    color: #ffd6dc;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin-top: 3px;
+    white-space: nowrap;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 760px) {
+    .brand-subtitle {
+        font-size: 0.55rem;
+        white-space: normal;
+        max-width: 180px;
+        line-height: 1.2;
+    }
 }
 
 .menu-btn {
