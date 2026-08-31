@@ -1330,24 +1330,205 @@ class ProductService {
     }
 
     searchProducts(query, category = 'all') {
-        let list = this.getProductsByCategory(category);
-        if (!query) return list;
-        const q = query.toLowerCase().trim();
-        return list.filter(p => 
-            p.name.toLowerCase().includes(q) ||
-            p.category.toLowerCase().includes(q) ||
-            p.description.toLowerCase().includes(q) ||
-            (p.brand && p.brand.toLowerCase().includes(q))
-        );
+        let list = this.products;
+        if (category && category.toLowerCase() !== 'all') {
+            const catLower = category.toLowerCase();
+            if (catLower === 'mobiles') {
+                list = list.filter(p => p.category === 'electronics' && (p.name.toLowerCase().includes('galaxy') || p.name.toLowerCase().includes('phone') || p.name.toLowerCase().includes('oneplus') || p.name.toLowerCase().includes('redmi') || p.name.toLowerCase().includes('realme')));
+            } else if (catLower === 'laptops') {
+                list = list.filter(p => p.category === 'electronics' && (p.name.toLowerCase().includes('macbook') || p.name.toLowerCase().includes('laptop') || p.name.toLowerCase().includes('vivobook') || p.name.toLowerCase().includes('thinkpad')));
+            } else if (catLower === 'gaming') {
+                list = list.filter(p => p.category === 'electronics' || p.category === 'toys' || p.name.toLowerCase().includes('game') || p.name.toLowerCase().includes('gaming') || p.name.toLowerCase().includes('keyboard') || p.name.toLowerCase().includes('mouse'));
+            } else if (catLower === 'luxury') {
+                list = list.filter(p => p.category === 'luxury' || p.price >= 5000 || p.dealTag === 'Luxury' || (p.brand && ['fossil', 'titan', 'calvin klein', 'tommy hilfiger', 'sony', 'apple'].includes(p.brand.toLowerCase())));
+            } else {
+                list = list.filter(p => p.category.toLowerCase() === catLower);
+            }
+        }
+
+        if (!query || !query.trim()) return list;
+
+        let q = query.toLowerCase().trim();
+
+        // 1. Extract Price Range Constraints
+        let maxPrice = null;
+        let minPrice = null;
+
+        const underMatch = q.match(/(?:under|below|less than|<=|<|upto|up to)\s*(?:rs\.?|inr|₹)?\s*(\d+(?:\.\d+)?)\s*(k|lakh)?/i);
+        if (underMatch) {
+            let num = parseFloat(underMatch[1]);
+            if (underMatch[2] && underMatch[2].toLowerCase() === 'k') num *= 1000;
+            if (underMatch[2] && underMatch[2].toLowerCase() === 'lakh') num *= 100000;
+            maxPrice = num;
+            q = q.replace(underMatch[0], ' ').trim();
+        }
+
+        const aboveMatch = q.match(/(?:above|over|more than|>=|>)\s*(?:rs\.?|inr|₹)?\s*(\d+(?:\.\d+)?)\s*(k|lakh)?/i);
+        if (aboveMatch) {
+            let num = parseFloat(aboveMatch[1]);
+            if (aboveMatch[2] && aboveMatch[2].toLowerCase() === 'k') num *= 1000;
+            if (aboveMatch[2] && aboveMatch[2].toLowerCase() === 'lakh') num *= 100000;
+            minPrice = num;
+            q = q.replace(aboveMatch[0], ' ').trim();
+        }
+
+        // 2. Tokenize remaining query
+        const tokens = q.split(/\s+/).filter(t => t.length > 0 && !['a', 'an', 'the', 'for', 'in', 'of', 'and', 'with', 'to', 'show', 'me', 'best', 'good', 'top', 'buy', 'item', 'items', 'find'].includes(t));
+
+        // 3. Common E-Commerce Synonym Map
+        const synonyms = {
+            'phone': ['galaxy', 'oneplus', 'redmi', 'realme', 'smartphone', 'mobile', 'android', '5g', 'apple', 'iphone'],
+            'phones': ['galaxy', 'oneplus', 'redmi', 'realme', 'smartphone', 'mobile', 'android', '5g'],
+            'mobile': ['galaxy', 'oneplus', 'redmi', 'realme', 'smartphone', 'phone', '5g'],
+            'smartphone': ['galaxy', 'oneplus', 'redmi', 'realme', 'phone', 'mobile', '5g'],
+            'earbuds': ['earphone', 'earphones', 'headphones', 'headphone', 'airpods', 'tws', 'neckband', 'boat', 'noise', 'boult', 'audio'],
+            'earphone': ['earbuds', 'headphones', 'neckband', 'audio', 'boat', 'noise', 'boult'],
+            'earphones': ['earbuds', 'headphones', 'neckband', 'audio', 'boat', 'noise', 'boult'],
+            'headphone': ['earbuds', 'headphones', 'neckband', 'audio', 'boat', 'sony', 'over-ear'],
+            'headphones': ['earbuds', 'headphone', 'neckband', 'audio', 'boat', 'sony', 'over-ear'],
+            'airpods': ['earbuds', 'tws', 'wireless', 'bluetooth', 'audio'],
+            'speaker': ['speakers', 'bluetooth', 'soundbar', 'boat', 'jbl', 'audio'],
+            'speakers': ['speaker', 'bluetooth', 'soundbar', 'boat', 'jbl', 'audio'],
+            'watch': ['smartwatch', 'chronograph', 'leather', 'titan', 'fossil', 'noise', 'boat', 'fire-boltt'],
+            'watches': ['smartwatch', 'chronograph', 'leather', 'titan', 'fossil', 'noise', 'boat'],
+            'smartwatch': ['watch', 'noise', 'boat', 'fire-boltt', 'fitness', 'tracker', 'amoled'],
+            'laptop': ['macbook', 'asus', 'vivobook', 'hp', 'lenovo', 'dell', 'computer', 'notebook'],
+            'laptops': ['macbook', 'asus', 'vivobook', 'hp', 'lenovo', 'dell', 'computer', 'notebook'],
+            'macbook': ['apple', 'laptop', 'm2', 'm3', 'notebook'],
+            'keyboard': ['mechanical', 'rgb', 'gaming', 'wireless', 'keyboards'],
+            'powerbank': ['power bank', 'battery', 'fast charging', 'type-c', 'charger'],
+            'shoe': ['shoes', 'sneakers', 'sneaker', 'running', 'boots', 'nike', 'puma', 'footwear', 'trainers'],
+            'shoes': ['shoe', 'sneakers', 'sneaker', 'running', 'boots', 'nike', 'puma', 'footwear', 'trainers'],
+            'sneaker': ['shoes', 'sneakers', 'running', 'nike', 'puma', 'streetwear'],
+            'sneakers': ['shoes', 'sneaker', 'running', 'nike', 'puma', 'streetwear'],
+            'jacket': ['bomber', 'hoodie', 'leather', 'windbreaker', 'coat', 'winter'],
+            'jackets': ['bomber', 'hoodie', 'leather', 'windbreaker', 'coat', 'winter'],
+            'shirt': ['t-shirt', 'tee', 'cotton', 'formal', 'casual', 'polo'],
+            'shirts': ['t-shirt', 'tee', 'cotton', 'formal', 'casual', 'polo'],
+            'tshirt': ['t-shirt', 'tee', 'shirt', 'cotton', 'oversized'],
+            't-shirt': ['tshirt', 'tee', 'shirt', 'cotton', 'oversized'],
+            'hoodie': ['oversized', 'fleece', 'sweatshirt', 'streetwear', 'jacket'],
+            'cargo': ['pants', 'trousers', 'streetwear', 'joggers'],
+            'dress': ['midi', 'maxi', 'floral', 'gown', 'women', 'kurti', 'saree'],
+            'dresses': ['midi', 'maxi', 'floral', 'gown', 'women', 'kurti', 'saree'],
+            'perfume': ['fragrance', 'scent', 'cologne', 'eau de parfum', 'bella vita', 'skinn'],
+            'fragrance': ['perfume', 'scent', 'cologne', 'eau de parfum'],
+            'makeup': ['lipstick', 'matte', 'foundation', 'eyeliner', 'mascara', 'beauty', 'maybelline', 'lakme'],
+            'skincare': ['serum', 'sunscreen', 'cleanser', 'face wash', 'moisturizer', 'ordinary', 'minimalist', 'derma'],
+            'serum': ['skincare', 'glow', 'ordinary', 'minimalist', 'niacinamide', 'vitamin c'],
+            'cricket': ['bat', 'ball', 'kit', 'sports', 'mrf', 'sg'],
+            'badminton': ['racket', 'shuttlecock', 'yonex', 'sports'],
+            'gym': ['dumbbells', 'protein', 'whey', 'mat', 'yoga', 'fitness', 'resistance'],
+            'fitness': ['dumbbells', 'protein', 'whey', 'yoga', 'smartwatch', 'gym'],
+            'snack': ['snacks', 'dry fruits', 'almonds', 'cashews', 'tea', 'coffee', 'cookies'],
+            'snacks': ['snack', 'dry fruits', 'almonds', 'cashews', 'tea', 'coffee', 'cookies'],
+            'grocery': ['oil', 'tea', 'coffee', 'almonds', 'dry fruits', 'snack'],
+            'tea': ['green tea', 'chai', 'taj mahal', 'tata tea', 'organic'],
+            'coffee': ['nescafe', 'davidoff', 'espresso', 'roast', 'instant'],
+            'cookware': ['pan', 'kadhai', 'prestige', 'pigeon', 'non-stick', 'fry pan'],
+            'kitchen': ['blender', 'mixer', 'air fryer', 'kettle', 'cookware', 'pan'],
+            'toy': ['toys', 'lego', 'board game', 'monopoly', 'uno', 'puzzle', 'car'],
+            'toys': ['toy', 'lego', 'board game', 'monopoly', 'uno', 'puzzle', 'car'],
+            'dog': ['puppy', 'pet', 'pedigree', 'dog food', 'leash', 'chew'],
+            'cat': ['kitten', 'pet', 'whiskas', 'cat food', 'litter'],
+            'pet': ['dog', 'cat', 'pedigree', 'whiskas', 'pet food']
+        };
+
+        let expandedTokens = [...tokens];
+        tokens.forEach(t => {
+            if (synonyms[t]) {
+                expandedTokens.push(...synonyms[t]);
+            }
+        });
+
+        // 4. Scoring and Filtering
+        function matchWord(text, word) {
+            if (!text || !word) return false;
+            const lower = text.toLowerCase();
+            const w = word.toLowerCase();
+            if (w === 'phone' || w === 'phones') {
+                return /(?:^|[^a-z0-9])(phone|phones|smartphone|smartphones|mobile|mobiles|5g)(?:$|[^a-z0-9])/i.test(lower);
+            }
+            if (w === 'air') {
+                return /(?:^|[^a-z0-9])air(?:$|[^a-z0-9])/i.test(lower);
+            }
+            if (w.length <= 3) {
+                return new RegExp('(?:^|[^a-z0-9])' + w + '(?:$|[^a-z0-9])', 'i').test(lower);
+            }
+            return lower.includes(w);
+        }
+
+        const scoredProducts = [];
+
+        for (const p of list) {
+            if (maxPrice !== null && p.price > maxPrice) continue;
+            if (minPrice !== null && p.price < minPrice) continue;
+
+            if (tokens.length === 0) {
+                scoredProducts.push({ product: p, score: 100 - (p.price / 1000) });
+                continue;
+            }
+
+            const pName = (p.name || '').toLowerCase();
+            const pBrand = (p.brand || '').toLowerCase();
+            const pCat = (p.category || '').toLowerCase();
+            const pDesc = (p.description || '').toLowerCase();
+            const pDeal = (p.dealTag || '').toLowerCase();
+            const pSpecs = Object.values(p.specs || {}).join(' ').toLowerCase();
+
+            let score = 0;
+
+            if (pName.includes(q)) score += 80;
+            if (pBrand.includes(q)) score += 50;
+            if (pCat.includes(q)) score += 30;
+
+            let matchedTokenCount = 0;
+            tokens.forEach(t => {
+                let tokenMatched = false;
+                if (matchWord(pName, t)) { score += 35; tokenMatched = true; }
+                if (matchWord(pBrand, t)) { score += 25; tokenMatched = true; }
+                if (matchWord(pCat, t)) { score += 20; tokenMatched = true; }
+                if (matchWord(pDeal, t)) { score += 15; tokenMatched = true; }
+                if (matchWord(pSpecs, t)) { score += 12; tokenMatched = true; }
+                if (matchWord(pDesc, t)) { score += 10; tokenMatched = true; }
+
+                if (tokenMatched) matchedTokenCount++;
+            });
+
+            expandedTokens.forEach(st => {
+                if (matchWord(pName, st)) score += 18;
+                if (matchWord(pBrand, st)) score += 15;
+                if (matchWord(pCat, st)) score += 10;
+                if (matchWord(pDesc, st)) score += 6;
+            });
+
+            if (matchedTokenCount === tokens.length && tokens.length > 1) {
+                score += 50;
+            }
+
+            // Quality threshold: multi-token queries must match at least 1 keyword in name/brand/category/specs OR match >= 2 tokens
+            if (tokens.length > 1) {
+                const hasStrongAnchor = tokens.some(t => matchWord(pName, t) || matchWord(pBrand, t) || matchWord(pCat, t) || matchWord(pSpecs, t)) || expandedTokens.some(st => matchWord(pName, st) || matchWord(pCat, st));
+                if (!hasStrongAnchor && matchedTokenCount < 2) {
+                    continue;
+                }
+            }
+
+            if (score >= 25) {
+                score += (p.rating || 4.0) * 2;
+                scoredProducts.push({ product: p, score });
+            }
+        }
+
+        scoredProducts.sort((a, b) => b.score - a.score);
+        return scoredProducts.map(sp => sp.product);
     }
 
     getTrendingProducts() {
-        // High rated products or custom selection
         return [...this.products].sort((a, b) => b.rating - a.rating).slice(0, 6);
     }
 
     getFlashDeals() {
-        // Products with % OFF or custom selection
         return this.products.filter(p => p.discount && p.discount.includes('%')).slice(0, 4);
     }
 
@@ -1356,7 +1537,6 @@ class ProductService {
     }
 
     getRecommendedProducts() {
-        // Mix of electronics and luxury
         return this.products.filter(p => p.rating >= 4.7).slice(4, 8);
     }
 

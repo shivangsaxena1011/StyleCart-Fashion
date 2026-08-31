@@ -235,30 +235,6 @@ function initNavigation() {
 function init() {
     initNavigation();
     
-    // Bind Event Listeners
-    const searchBtn = document.getElementById('searchBtn');
-    if (searchBtn && window.performSearch) {
-        searchBtn.addEventListener('click', window.performSearch);
-    }
-    
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput && window.performSearch) {
-        searchInput.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') {
-                window.performSearch();
-                document.querySelectorAll('.search-suggestions').forEach(el => el.remove());
-            } else if (window.debounce) {
-                // Debounced instant search suggestions
-                window.debounce(() => window.performSearch(), 300)();
-            }
-        });
-    }
-    
-    const voiceSearchBtn = document.getElementById('voiceSearchBtn');
-    if (voiceSearchBtn && window.startVoiceSearch) {
-        voiceSearchBtn.addEventListener('click', window.startVoiceSearch);
-    }
-    
     const sortDropdown = document.getElementById('sortDropdown');
     if (sortDropdown && window.sortProducts) {
         sortDropdown.addEventListener('change', (e) => {
@@ -501,25 +477,31 @@ document.addEventListener("DOMContentLoaded", () => {
     if (heroBtn && heroInput) {
         heroBtn.addEventListener('click', () => {
             const query = heroInput.value.trim();
-            if (query) {
-                if (window.startAISearch) {
-                    window.startAISearch(query);
-                } else {
-                    const s = document.getElementById('searchInput');
-                    if (s) { s.value = query; window.performSearch(); }
-                }
+            if (query && window.performSearch) {
+                window.performSearch(query);
             }
         });
         heroInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') heroBtn.click();
+            if (e.key === 'Enter') {
+                const query = heroInput.value.trim();
+                if (query && window.performSearch) {
+                    window.performSearch(query);
+                }
+            }
         });
     }
 
     const heroVoiceBtn = document.getElementById('heroVoiceSearchBtn');
     if (heroVoiceBtn) {
         heroVoiceBtn.addEventListener('click', () => {
-            const voiceBtn = document.getElementById('voiceSearchBtn');
-            if (voiceBtn) voiceBtn.click();
+            if (window.startVoiceSearch) window.startVoiceSearch();
+        });
+    }
+
+    const heroImageBtn = document.getElementById('heroImageSearchBtn');
+    if (heroImageBtn) {
+        heroImageBtn.addEventListener('click', () => {
+            if (window.openImageSearchModal) window.openImageSearchModal();
         });
     }
 
