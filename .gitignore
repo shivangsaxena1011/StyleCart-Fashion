@@ -23,3 +23,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .eslintcache
+
+uploads/
+dist/
+*.log
+.env.local
+.env.production

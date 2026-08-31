@@ -101,3 +101,14 @@ window.undoAddToCart = undoAddToCart;
 window.moveFromCartToWishlist = moveFromCartToWishlist;
 window.getCartTotals = getCartTotals;
 window.updateCartCount = updateCartCount;
+
+window.CartService = {
+    addToCart: function(productOrId) {
+        if (!productOrId) return;
+        const id = typeof productOrId === 'object' ? productOrId.id : productOrId;
+        addToCart(id);
+    },
+    removeFromCart: removeFromCart,
+    getCart: function() { return cart; },
+    getTotals: getCartTotals
+};

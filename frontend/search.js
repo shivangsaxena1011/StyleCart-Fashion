@@ -52,7 +52,7 @@ function performSearch() {
                         <strong>🔍 No products found matching "${query}"</strong>
                         <p style="color:var(--muted);margin-top:8px;">Try searching for "iPhone", "MacBook", "Perfume", or "Watch".</p>
                         <button onclick="askAI('${query}')" style="margin-top:20px;padding:12px 30px;border-radius:999px;background:var(--maroon-light);color:white;border:none;cursor:pointer;font-weight:700;">
-                            🤖 Ask Avenor AI
+                            🤖 Ask StyleCart AI
                         </button>
                     </div>
                 `;
@@ -95,7 +95,7 @@ function showSearchSuggestions(query, results) {
         html += `</div>`;
     } else {
         html += `<div class="suggestion-group" style="padding:12px 16px;color:var(--muted);font-size:0.9rem;">
-            No instant matches found. Click "Search" or <span style="color:var(--maroon-light);cursor:pointer;font-weight:700;" onclick="window.askAI('${query}')">Ask Avenor AI</span>
+            No instant matches found. Click "Search" or <span style="color:var(--maroon-light);cursor:pointer;font-weight:700;" onclick="window.askAI('${query}')">Ask StyleCart AI</span>
         </div>`;
     }
     

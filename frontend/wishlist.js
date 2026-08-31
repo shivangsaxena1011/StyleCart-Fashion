@@ -11,8 +11,10 @@ function updateWishlistCount() {
 }
 
 function toggleWishlist(productId) {
-    const index = wishlist.indexOf(productId);
-    const btns = document.querySelectorAll(`.wishlist[data-product="${productId}"]`);
+    const id = parseInt(productId, 10);
+    if (isNaN(id)) return;
+    const index = wishlist.indexOf(id);
+    const btns = document.querySelectorAll(`.wishlist[data-product="${id}"]`);
     
     if (index > -1) {
         wishlist.splice(index, 1);
@@ -22,7 +24,7 @@ function toggleWishlist(productId) {
             btn.classList.remove('active');
         });
     } else {
-        wishlist.push(productId);
+        wishlist.push(id);
         window.showNotification('❤️ Added to wishlist!');
         btns.forEach(btn => {
             btn.textContent = '♥';
@@ -39,7 +41,8 @@ function toggleWishlist(productId) {
 }
 
 function isInWishlist(productId) {
-    return wishlist.includes(productId);
+    const id = parseInt(productId, 10);
+    return wishlist.includes(id);
 }
 
 // Expose globally

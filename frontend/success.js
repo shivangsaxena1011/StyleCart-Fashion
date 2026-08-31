@@ -47,7 +47,7 @@ function downloadInvoice() {
     const order = JSON.parse(rawOrder);
     
     let docContent = `========================================\n`;
-    docContent += `             AVENOR INVOICE             \n`;
+    docContent += `             StyleCart INVOICE             \n`;
     docContent += `========================================\n`;
     docContent += `Order Number: ${order.orderId}\n`;
     docContent += `Date: ${new Date(order.createdAt || Date.now()).toLocaleDateString()}\n`;

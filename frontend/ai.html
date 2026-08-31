@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avenor AI Fashion Studio | Next-Gen Style Engine</title>
-    <meta name="description" content="Design outfits, get size predictions, try-on clothes virtually, and receive personalized styling advice from Avenor's advanced AI.">
+    <title>StyleCart AI Fashion Studio | Next-Gen Style Engine</title>
+    <meta name="description" content="Design outfits, get size predictions, try-on clothes virtually, and receive personalized styling advice from StyleCart's advanced AI.">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <style>
@@ -12,6 +12,12 @@
             font-family: 'Outfit', sans-serif;
         }
     </style>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8f1d2d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
 </head>
 <body>
     <div class="page-glow"></div>
@@ -19,7 +25,7 @@
     <!-- Navigation Header -->
     <nav class="navbar">
         <div class="nav-top-row" style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:20px; flex-wrap:nowrap;">
-            <a href="index.html" class="logo">AVENOR</a>
+            <a href="index.html" class="logo">StyleCart</a>
 
             <div class="nav-links" style="border-top:none; padding-top:0;">
                 <a href="index.html#fashion">Fashion</a>
@@ -90,13 +96,13 @@
             <div class="tab-content active" id="stylist">
                 <div class="tab-header">
                     <h2>🤖 AI Personal Stylist 2.0</h2>
-                    <p>Provide your occasion, location, weather, budget, and formality. Avenor AI Stylist 2.0 synthesizes complete looks considering your catalog & digital wardrobe.</p>
+                    <p>Provide your occasion, location, weather, budget, and formality. StyleCart AI Stylist 2.0 synthesizes complete looks considering your catalog & digital wardrobe.</p>
                 </div>
                 
                 <div class="chat-container">
                     <div class="chat-messages" id="aiStylistChat">
                         <div class="chat-bubble bot">
-                            👋 Welcome to Avenor AI Stylist 2.0! Describe your occasion, desired aesthetic, or budget constraints (e.g. <em>"I need an elegant minimal outfit for a dinner date under ₹15,000"</em>).
+                            👋 Welcome to StyleCart AI Stylist 2.0! Describe your occasion, desired aesthetic, or budget constraints (e.g. <em>"I need an elegant minimal outfit for a dinner date under ₹15,000"</em>).
                         </div>
                     </div>
                     
@@ -252,7 +258,7 @@
             <div class="tab-content" id="steal">
                 <div class="tab-header">
                     <h2>✨ Steal This Look</h2>
-                    <p>Upload any street outfit photo. Avenor AI identifies individual garment elements and recreates the look across Inspired, Match, Budget, and Premium price tiers.</p>
+                    <p>Upload any street outfit photo. StyleCart AI identifies individual garment elements and recreates the look across Inspired, Match, Budget, and Premium price tiers.</p>
                 </div>
 
                 <div class="steal-workspace glassmorphism" style="padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); text-align:center;">
@@ -369,7 +375,7 @@
                 </div>
 
                 <div class="catalog-section">
-                    <h3>🛍 Add Items from Avenor Catalog</h3>
+                    <h3>🛍 Add Items from StyleCart Catalog</h3>
                     <div class="builder-catalog-grid" id="builderCatalog"></div>
                 </div>
             </div>
@@ -436,7 +442,7 @@
             <div class="tab-content" id="prediction">
                 <div class="tab-header">
                     <h2>⚖️ AI Size Predictor</h2>
-                    <p>No tape measurements needed. Enter your basic details and Avenor's custom fitting model will predict your size profile.</p>
+                    <p>No tape measurements needed. Enter your basic details and StyleCart's custom fitting model will predict your size profile.</p>
                 </div>
                 
                 <div class="predictor-card">
@@ -469,7 +475,7 @@
             <div class="tab-content" id="wardrobe">
                 <div class="tab-header">
                     <h2>👕 AI Digital Wardrobe</h2>
-                    <p>Log items you already own. The AI Wardrobe Engine generates smart recommendations to pair them with Avenor items.</p>
+                    <p>Log items you already own. The AI Wardrobe Engine generates smart recommendations to pair them with StyleCart items.</p>
                 </div>
                 
                 <div class="wardrobe-section">
@@ -547,7 +553,7 @@
             <div class="tab-content" id="gpt">
                 <div class="tab-header">
                     <h2>🧠 Fashion GPT Advisor</h2>
-                    <p>Ask Avenor's custom GPT model anything about dressing standards, trend rules, color pairings, or styling guide definitions.</p>
+                    <p>Ask StyleCart's custom GPT model anything about dressing standards, trend rules, color pairings, or styling guide definitions.</p>
                 </div>
                 
                 <div class="gpt-workspace">
@@ -607,7 +613,7 @@
             <div class="tab-content" id="search">
                 <div class="tab-header">
                     <h2>📸 AI Visual Search & Image Matcher</h2>
-                    <p>Upload style inspirations or click on our sample models below to let Avenor AI visually parse patterns and find matching catalog clothes.</p>
+                    <p>Upload style inspirations or click on our sample models below to let StyleCart AI visually parse patterns and find matching catalog clothes.</p>
                 </div>
                 
                 <div class="visual-search-workspace">
@@ -637,7 +643,7 @@
             <div class="tab-content" id="community">
                 <div class="tab-header">
                     <h2>👥 Outfit Community Feed</h2>
-                    <p>Browse outfits shared by the Avenor style community. Click on creators' wardrobes to shop the exact combinations.</p>
+                    <p>Browse outfits shared by the StyleCart style community. Click on creators' wardrobes to shop the exact combinations.</p>
                 </div>
                 
                 <div class="community-feed-grid" id="communityFeedGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:30px; margin-top:25px;">
@@ -664,5 +670,6 @@
             }
         });
     </script>
+    <script src="install-prompt.js"></script>
 </body>
 </html>

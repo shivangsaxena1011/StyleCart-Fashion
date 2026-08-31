@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Orders | Avenor</title>
+    <title>My Orders | StyleCart</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .orders-page {
@@ -180,13 +180,19 @@
             }
         }
     </style>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8f1d2d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
     <div class="page-glow"></div>
 
     <nav class="navbar">
-        <a href="index.html" class="logo">AVENOR</a>
+        <a href="index.html" class="logo">StyleCart</a>
 
         <button class="menu-btn" id="menuBtn" aria-label="Open menu">
             <span></span>
@@ -232,54 +238,14 @@
             <p class="subtitle">Track your purchases</p>
 
             <div id="ordersList">
-                <div class="order-card">
-                    <div class="order-header">
-                        <span class="order-id">#ORD-2024-001</span>
-                        <span class="order-date">December 15, 2024</span>
-                        <span class="order-status delivered">Delivered</span>
-                    </div>
-                    <div class="order-items">
-                        <div class="order-item">
-                            <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9" alt="iPhone">
-                            <div class="item-info">
-                                <div class="name">iPhone 17 Pro Max</div>
-                                <div class="qty">Qty: 1</div>
-                            </div>
-                            <div class="item-price">₹129,900</div>
-                        </div>
-                    </div>
-                    <div class="order-total">
-                        Total: <strong>₹129,900</strong>
-                    </div>
-                </div>
-
-                <div class="order-card">
-                    <div class="order-header">
-                        <span class="order-id">#ORD-2024-002</span>
-                        <span class="order-date">December 10, 2024</span>
-                        <span class="order-status shipped">Shipped</span>
-                    </div>
-                    <div class="order-items">
-                        <div class="order-item">
-                            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff" alt="Sneakers">
-                            <div class="item-info">
-                                <div class="name">Nike Air Max 2025</div>
-                                <div class="qty">Qty: 2</div>
-                            </div>
-                            <div class="item-price">₹23,998</div>
-                        </div>
-                    </div>
-                    <div class="order-total">
-                        Total: <strong>₹23,998</strong>
-                    </div>
-                </div>
+                <div style="text-align:center;padding:40px;color:var(--muted);">Loading orders...</div>
             </div>
         </div>
     </main>
 
     <footer>
         <div>
-            <a href="index.html" class="logo">AVENOR</a>
+            <a href="index.html" class="logo">StyleCart</a>
             <p>AI powered marketplace for smarter shopping, better comparison, and personalized product discovery.</p>
         </div>
         <div class="footer-links">
@@ -291,6 +257,93 @@
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="utils.js"></script>
     <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', loadOrders);
+
+        async function loadOrders() {
+            const container = document.getElementById('ordersList');
+            if (!container) return;
+
+            let orders = [];
+            // Try fetching from backend if user is logged in
+            const token = localStorage.getItem('stylecart_token') || localStorage.getItem('token');
+            if (token) {
+                try {
+                    const data = await apiFetch('/orders/my-orders');
+                    if (data.success && Array.isArray(data.orders)) {
+                        orders = data.orders;
+                    }
+                } catch(e) {
+                    console.warn("Could not fetch remote orders:", e);
+                }
+            }
+
+            // Merge with local storage orders
+            const localOrders = JSON.parse(localStorage.getItem('orders')) || [];
+            const combinedMap = new Map();
+            [...orders, ...localOrders].forEach(o => {
+                const key = o._id || o.orderId;
+                if (key && !combinedMap.has(key)) combinedMap.set(key, o);
+            });
+            const allOrders = Array.from(combinedMap.values());
+
+            if (allOrders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-orders">
+                        <div class="icon">📦</div>
+                        <h2>No orders placed yet</h2>
+                        <p>When you purchase products, your order history and tracking will appear here.</p>
+                        <a href="index.html" class="shop-btn">Start Shopping</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = allOrders.map(order => {
+                const status = (order.orderStatus || order.status || 'Processing').toLowerCase();
+                const statusClass = status === 'delivered' ? 'delivered' : (status === 'shipped' ? 'shipped' : 'processing');
+                const dateStr = new Date(order.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                const orderId = order.orderId || (order._id ? '#ORD-' + order._id.slice(-6).toUpperCase() : '#ORD-REF');
+                const products = order.products || order.items || [];
+                const total = order.total || order.totalAmount || (order.subtotal ? order.subtotal + (order.tax || 0) + (order.shipping || 0) : 0);
+
+                const itemsHtml = products.map(item => {
+                    const prodName = escapeHTML(item.name || item.title || 'Product');
+                    const prodQty = item.quantity || 1;
+                    const prodPrice = (item.price || 0) * prodQty;
+                    const prodImg = escapeHTML(item.image || 'https://via.placeholder.com/60');
+                    return `
+                        <div class="order-item">
+                            <img src="${prodImg}" alt="${prodName}" onerror="this.src='https://via.placeholder.com/60'">
+                            <div class="item-info">
+                                <div class="name">${prodName}</div>
+                                <div class="qty">Qty: ${prodQty}</div>
+                            </div>
+                            <div class="item-price">₹${prodPrice.toLocaleString()}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <span class="order-id">${escapeHTML(orderId)}</span>
+                            <span class="order-date">${dateStr}</span>
+                            <span class="order-status ${statusClass}">${escapeHTML(status.toUpperCase())}</span>
+                        </div>
+                        <div class="order-items">
+                            ${itemsHtml}
+                        </div>
+                        <div class="order-total">
+                            Total: <strong>₹${total.toLocaleString()}</strong>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+    <script src="install-prompt.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout | Avenor</title>
+    <title>Checkout | StyleCart</title>
     <link rel="stylesheet" href="style.css">
     <style>
         /* ===== CHECKOUT PAGE ===== */
@@ -742,6 +742,12 @@
             }
         }
     </style>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8f1d2d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
@@ -749,7 +755,7 @@
 
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar">
-        <a href="index.html" class="logo">AVENOR</a>
+        <a href="index.html" class="logo">StyleCart</a>
 
         <button class="menu-btn" id="menuBtn" aria-label="Open menu">
             <span></span>
@@ -836,7 +842,7 @@
     <!-- ===== FOOTER ===== -->
     <footer>
         <div>
-            <a href="index.html" class="logo">AVENOR</a>
+            <a href="index.html" class="logo">StyleCart</a>
             <p>AI powered marketplace for smarter shopping, better comparison, and personalized product discovery.</p>
         </div>
         <div class="footer-links">
@@ -893,7 +899,7 @@
         // ============================================================
         const coupons = {
             'WELCOME1000': { discount: 1000, message: '₹1000 welcome discount!' },
-            'AVENOR500': { discount: 500, message: '₹500 Avenor discount!' },
+            'StyleCart500': { discount: 500, message: '₹500 StyleCart discount!' },
             'FIRSTORDER': { discount: 1500, message: '₹1500 first order discount!' },
             'PREMIUM20': { discount: 2000, message: '₹2000 premium discount!' },
             'SAVE10': { discount: 500, message: '₹500 off applied!' },
@@ -1001,7 +1007,7 @@
                 <div class="ai-assistant-box">
                     <div class="ai-header">
                         <span>🤖</span>
-                        Avenor AI
+                        StyleCart AI
                     </div>
                     <div class="ai-message" id="aiMessage">
                         ${generateAIMessage()}
@@ -1785,5 +1791,6 @@
             }
         });
     </script>
+    <script src="install-prompt.js"></script>
 </body>
 </html>

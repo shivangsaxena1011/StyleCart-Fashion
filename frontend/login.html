@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Avenor</title>
+    <title>Login | StyleCart</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .auth-page {
@@ -143,11 +143,17 @@
             }
         }
     </style>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8f1d2d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
 </head>
 <body>
     <div class="auth-page">
         <div class="auth-container">
-            <a href="index.html" class="logo">AVENOR</a>
+            <a href="index.html" class="logo">StyleCart</a>
             <h1>Welcome Back</h1>
             <p class="subtitle">Login to your account</p>
 
@@ -174,6 +180,7 @@
         </div>
     </div>
 
+    <script src="utils.js"></script>
     <script>
         async function handleLogin(e) {
             e.preventDefault();
@@ -182,38 +189,33 @@
             const password = inputs[1].value;
 
             try {
-                const response = await fetch('http://localhost:5001/api/auth/login', {
+                const data = await apiFetch('/auth/login', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
                 });
-                const data = await response.json();
                 if (data.success) {
                     localStorage.setItem('token', data.token);
+                    localStorage.setItem('stylecart_token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('stylecart_user', JSON.stringify(data.user));
                     
-                    alert('✅ Login successful!');
-                    if (data.user.role === 'admin') {
-                        window.location.href = 'admin.html';
-                    } else {
-                        window.location.href = 'index.html';
-                    }
+                    showNotification('✅ Login successful!', 'success');
+                    setTimeout(() => {
+                        if (data.user.role === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'index.html';
+                        }
+                    }, 500);
                 } else {
-                    alert('❌ Login failed: ' + data.message);
+                    showNotification('❌ Login failed: ' + (data.error?.message || data.message || 'Invalid credentials'), 'error');
                 }
             } catch (err) {
                 console.error(err);
-                // Fallback login for demo
-                alert('✅ Server offline. Authenticated in Demo Mode.');
-                localStorage.setItem('token', 'mock_demo_jwt_token');
-                localStorage.setItem('user', JSON.stringify({ name: "Demo User", email: email, role: email.includes('admin') ? 'admin' : 'user' }));
-                if (email.includes('admin')) {
-                    window.location.href = 'admin.html';
-                } else {
-                    window.location.href = 'index.html';
-                }
+                showNotification('❌ Connection error. Please check server status.', 'error');
             }
         }
     </script>
+    <script src="install-prompt.js"></script>
 </body>
 </html>

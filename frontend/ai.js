@@ -2,7 +2,7 @@
 
 async function askAI(query) {
     if (!query || !query.trim()) return;
-    window.showNotification('🤖 Avenor AI is searching catalog...', 'info');
+    window.showNotification('🤖 StyleCart AI is searching catalog...', 'info');
     
     const container = document.getElementById('aiRecommendations');
     if (container) {
@@ -16,15 +16,10 @@ async function askAI(query) {
     }
     
     try {
-        const response = await fetch('http://localhost:5001/api/ai-search', {
+        const data = await apiFetch('/ai-search', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
             body: JSON.stringify({ query: query.trim() })
         });
-        
-        const data = await response.json();
         
         if (data.recommendations && data.recommendations.length > 0) {
             if (container) {
@@ -33,7 +28,7 @@ async function askAI(query) {
                         <div class="ai-header" style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
                             <span class="ai-icon" style="font-size:2.2rem;">🤖</span>
                             <div>
-                                <h3 style="font-size:1.4rem;font-weight:900;">Avenor AI Search Assistant</h3>
+                                <h3 style="font-size:1.4rem;font-weight:900;">StyleCart AI Search Assistant</h3>
                                 <p class="ai-message" style="color:var(--muted);margin-top:4px;">${data.message || 'Based on your query, here is what I recommend:'}</p>
                             </div>
                         </div>
@@ -100,12 +95,12 @@ function toggleAIAssistant() {
     
     popup.innerHTML = `
         <div class="ai-assistant-header" style="padding:18px 24px;background:linear-gradient(135deg, var(--maroon), var(--maroon-light));display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);">
-            <span style="font-weight:900;letter-spacing:1px;font-size:1.05rem;">🤖 AVENOR AI STYLIST</span>
+            <span style="font-weight:900;letter-spacing:1px;font-size:1.05rem;">🤖 StyleCart AI Stylist</span>
             <button onclick="this.closest('.ai-assistant-popup').remove()" style="background:none;border:none;color:white;cursor:pointer;font-size:1.2rem;">✕</button>
         </div>
         <div class="ai-assistant-body" style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;">
             <div class="ai-message bot" style="align-self:flex-start;padding:12px 18px;border-radius:16px 16px 16px 4px;background:rgba(255,255,255,0.06);max-width:85%;font-size:0.95rem;line-height:1.5;">
-                Hello! I am Avenor AI, your personalized shopper. Ask me for recommendations, compare specs, or style guides.
+                Hello! I am StyleCart AI, your personalized shopper. Ask me for recommendations, compare specs, or style guides.
             </div>
             <div class="ai-suggestions" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
                 <button onclick="window.fillAIChat('best laptop under 150000')" style="padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:white;font-size:0.8rem;cursor:pointer;">💻 Best Laptop</button>
@@ -158,15 +153,11 @@ async function sendAIMessage() {
     body.scrollTop = body.scrollHeight;
     
     try {
-        const response = await fetch('http://localhost:5001/api/chat', {
+        const data = await apiFetch('/chat', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
             body: JSON.stringify({ message: query })
         });
         
-        const data = await response.json();
         typing.remove();
         
         const botMsg = document.createElement('div');

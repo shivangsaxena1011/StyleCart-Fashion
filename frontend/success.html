@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Confirmed | Avenor</title>
+    <title>Order Confirmed | StyleCart</title>
     <link rel="stylesheet" href="style.css">
     <style>
         /* ===== SUCCESS PAGE LAYOUT ===== */
@@ -387,6 +387,12 @@
             }
         }
     </style>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8f1d2d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
@@ -394,7 +400,7 @@
 
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar">
-        <a href="index.html" class="logo">AVENOR</a>
+        <a href="index.html" class="logo">StyleCart</a>
         <button class="menu-btn" id="menuBtn" aria-label="Open menu">
             <span></span><span></span><span></span>
         </button>
@@ -421,7 +427,7 @@
             <div class="success-hero">
                 <div class="success-checkmark">✓</div>
                 <h1>Payment Successful!</h1>
-                <p>Thank you for shopping with Avenor. Your order processing is complete.</p>
+                <p>Thank you for shopping with StyleCart. Your order processing is complete.</p>
             </div>
 
             <!-- Two Column Core Layout -->
@@ -492,7 +498,7 @@
                     
                     <!-- AI Confirmation Engine -->
                     <div class="ai-assistant-box">
-                        <div class="ai-header">🤖 Avenor AI</div>
+                        <div class="ai-header">🤖 StyleCart AI</div>
                         <div class="ai-message">
                             Your order has been safely recorded inside the warehouse deployment pipeline. Expected arrival profile is <span class="ai-highlight" id="aiDeliveryDay">soon</span>. We will automatically ping you when tracking coordinates are generated.
                         </div>
@@ -568,7 +574,7 @@
     <!-- ===== FOOTER ===== -->
     <footer>
         <div>
-            <a href="index.html" class="logo">AVENOR</a>
+            <a href="index.html" class="logo">StyleCart</a>
             <p>AI powered marketplace for smarter shopping, better comparison, and personalized product discovery.</p>
         </div>
         <div class="footer-links">
@@ -689,7 +695,7 @@
 
     if (!grid) return;
 
-    const targetPool = (typeof products !== "undefined") ? products : [];
+    const targetPool = window.ProductService ? window.ProductService.getAllProducts() : [];
 
     if (targetPool.length === 0) {
         grid.innerHTML =
@@ -739,5 +745,6 @@
     `).join('');
 }
     </script>
+    <script src="install-prompt.js"></script>
 </body>
 </html>

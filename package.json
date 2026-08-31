@@ -1,11 +1,12 @@
 {
-  "name": "avenor-backend",
+  "name": "stylecart-fashion",
   "version": "1.0.0",
-  "description": "Avenor AI Marketplace Backend",
+  "description": "StyleCart Fashion — AI-Powered Fashion Shopping Platform",
   "main": "backend/server.js",
   "scripts": {
     "start": "node backend/server.js",
-    "dev": "nodemon backend/server.js"
+    "dev": "nodemon backend/server.js",
+    "test": "echo \"Tests will be added\" && exit 0"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

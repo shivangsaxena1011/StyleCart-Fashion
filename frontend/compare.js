@@ -104,7 +104,7 @@ async function renderComparePage() {
                 </tr>
                 <tr>
                     <td style="padding:16px 20px;font-weight:700;border-top:1px solid var(--line);">Brand</td>
-                    ${products.map(p => `<td style="padding:16px 20px;text-align:center;border-top:1px solid var(--line);font-weight:600;">${p.brand || 'Avenor Premium'}</td>`).join('')}
+                    ${products.map(p => `<td style="padding:16px 20px;text-align:center;border-top:1px solid var(--line);font-weight:600;">${p.brand || 'StyleCart Premium'}</td>`).join('')}
                 </tr>
                 <tr>
                     <td style="padding:16px 20px;font-weight:700;border-top:1px solid var(--line);">Description</td>
@@ -142,20 +142,15 @@ async function fetchAICompareReport(ids) {
     
     reportBox.innerHTML = `
         <div class="ai-loading" style="padding:30px;background:rgba(255,255,255,0.02);border-radius:24px;border:1px solid var(--line);text-align:center;">
-            <p>🤖 Avenor AI is analyzing product specs...</p>
+            <p>🤖 StyleCart AI is analyzing product specs...</p>
         </div>
     `;
     
     try {
-        const response = await fetch('http://localhost:5001/api/compare', {
+        const data = await apiFetch('/compare', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
             body: JSON.stringify({ productIds: ids })
         });
-        
-        const data = await response.json();
         
         let reportMarkdown = data.analysis || "Failed to generate comparison report.";
         // Simple Markdown Parsers
@@ -168,7 +163,7 @@ async function fetchAICompareReport(ids) {
         reportBox.innerHTML = `
             <div class="ai-report-body" style="padding:30px;background:rgba(143,29,45,0.05);border-radius:24px;border:1px solid rgba(143,29,45,0.2);line-height:1.6;">
                 <h3 style="font-size:1.5rem;font-weight:900;margin-bottom:15px;display:flex;align-items:center;gap:10px;">
-                    <span>🤖</span> Avenor AI Smart Summary
+                    <span>🤖</span> StyleCart AI Smart Summary
                 </h3>
                 <div>${reportMarkdown}</div>
             </div>

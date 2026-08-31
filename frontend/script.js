@@ -1,4 +1,4 @@
-// ========== AVENOR MODULAR SCRIPT LOADER ==========
+// ========== StyleCart MODULAR SCRIPT LOADER ==========
 // Automatically imports all sub-modules in correct dependency order.
 
 (function() {
@@ -29,5 +29,5 @@
         document.head.appendChild(scriptEl);
     });
 
-    console.log("AVENOR modules loaded successfully in correct sequence.");
+    console.log("StyleCart modules loaded successfully in correct sequence.");
 })();

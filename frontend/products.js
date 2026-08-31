@@ -88,7 +88,7 @@ const localFallbackProducts = [
         rating: 4.4,
         discount: "20% OFF",
         description: "Ultra-comfortable premium quality heavy knit cotton hoodie suited for streetwear styling.",
-        brand: "Avenor Couture",
+        brand: "StyleCart Couture",
         reviewsCount: 45,
         specs: { "Material": "100% Cotton", "Fit": "Oversized", "Color": "Crimson Black" }
     },
@@ -292,13 +292,12 @@ const localFallbackProducts = [
 class ProductService {
     constructor() {
         this.products = [...localFallbackProducts];
-        this.baseUrl = "http://localhost:5001/api/products";
+        this.baseUrl = (window.API_BASE || '/api') + '/products';
     }
 
     async init() {
         try {
-            const response = await fetch(this.baseUrl);
-            const data = await response.json();
+            const data = await apiFetch('/products');
             if (data.success && data.products && data.products.length > 0) {
                 this.products = data.products;
                 console.log("ProductService initialized with backend catalog.");

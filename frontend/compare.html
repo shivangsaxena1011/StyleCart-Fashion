@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compare Products | Avenor</title>
+    <title>Compare Products | StyleCart</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .compare-page {
@@ -209,6 +209,12 @@
             }
         }
     </style>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8f1d2d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
@@ -216,7 +222,7 @@
 
     <!-- Navbar -->
     <nav class="navbar">
-        <a href="index.html" class="logo">AVENOR</a>
+        <a href="index.html" class="logo">StyleCart</a>
         <button class="menu-btn" id="menuBtn" aria-label="Open menu">
             <span></span><span></span><span></span>
         </button>
@@ -268,7 +274,7 @@
 
     <footer>
         <div>
-            <a href="index.html" class="logo">AVENOR</a>
+            <a href="index.html" class="logo">StyleCart</a>
             <p>AI powered marketplace for smarter shopping.</p>
         </div>
         <div class="footer-links">
@@ -297,5 +303,6 @@
     <script>
         setTimeout(window.renderComparePage, 450);
     </script>
+    <script src="install-prompt.js"></script>
 </body>
 </html>

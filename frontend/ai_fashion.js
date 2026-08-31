@@ -1,6 +1,6 @@
-// ========== AVENOR NEXT-GEN AI FASHION HUB CONTROL ENGINE ==========
+// ========== StyleCart NEXT-GEN AI FASHION HUB CONTROL ENGINE ==========
 
-const AI_API_BASE = "http://localhost:5001/api/ai-fashion";
+const AI_API_BASE = (window.API_BASE || "/api") + "/ai";
 let fashionCatalog = [];
 let currentOutfit = {
     upper: null,
@@ -10,7 +10,7 @@ let currentOutfit = {
 };
 
 // Default User Wardrobe
-let myWardrobe = JSON.parse(localStorage.getItem('avenor_ai_wardrobe')) || [
+let myWardrobe = JSON.parse(localStorage.getItem('stylecart_ai_wardrobe')) || [
     { id: 101, name: "Casual Denim Shirt", category: "upper", color: "Blue", material: "Denim" },
     { id: 102, name: "Slim Fit Black Jeans", category: "lower", color: "Black", material: "Cotton" }
 ];
@@ -30,35 +30,22 @@ document.addEventListener("DOMContentLoaded", () => {
 // Fetch all fashion catalog products
 async function fetchCatalog() {
     try {
-        const res = await fetch("http://localhost:5001/api/ai-search", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query: "fashion luxury beauty" })
-        });
-        const data = await res.json();
-        // Fallback filter
-        if (data.recommendations) {
-            fashionCatalog = data.recommendations;
-        } else {
-            fashionCatalog = [];
-        }
-        
-        // Double check by loading all database products if needed
-        const allRes = await fetch("http://localhost:5001/api/ai-search", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query: "all" })
-        });
-        const allData = await allRes.json();
-        if (allData.recommendations) {
-            fashionCatalog = allData.recommendations.filter(p => p.category === "fashion" || p.category === "luxury" || p.category === "beauty");
+        const data = await apiFetch('/products');
+        if (data.success && data.products && data.products.length > 0) {
+            fashionCatalog = data.products.filter(p => p.category === "fashion" || p.category === "luxury" || p.category === "beauty");
+        } else if (window.ProductService) {
+            fashionCatalog = window.ProductService.getAllProducts().filter(p => p.category === "fashion" || p.category === "luxury" || p.category === "beauty");
         }
         
         populateBuilderCatalog();
         populateTryOnCatalog();
     } catch (err) {
         console.error("AI Catalog Fetch Error:", err);
-        window.showNotification("Unable to load AI catalog. Check connection.", "info");
+        if (window.ProductService) {
+            fashionCatalog = window.ProductService.getAllProducts().filter(p => p.category === "fashion" || p.category === "luxury" || p.category === "beauty");
+            populateBuilderCatalog();
+            populateTryOnCatalog();
+        }
     }
 }
 
@@ -89,12 +76,10 @@ async function sendStylistMessage() {
     const thinkingId = appendChatBubble(chatBox, "bot", "🤖 AI Stylist is designing your outfit...", true);
     
     try {
-        const response = await fetch(`${AI_API_BASE}/stylist`, {
+        const data = await apiFetch('/ai/stylist', {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: query, budget })
         });
-        const data = await response.json();
         
         document.getElementById(thinkingId)?.remove();
         
@@ -245,12 +230,10 @@ async function calculateFashionScore() {
     if (scoreVal) scoreVal.textContent = "⏳";
     
     try {
-        const response = await fetch(`${AI_API_BASE}/score`, {
+        const data = await apiFetch('/ai-fashion/score', {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ productIds })
         });
-        const data = await response.json();
         
         if (data.success) {
             // Update circular gauge
@@ -416,7 +399,7 @@ function calculateSizePrediction() {
                     <strong>${shoeSize} UK/IN</strong>
                 </div>
             </div>
-            <p class="size-meta">AI model calibrated with 98% accuracy based on Avenor Couture fitting tables.</p>
+            <p class="size-meta">AI model calibrated with 98% accuracy based on StyleCart Couture fitting tables.</p>
         `;
     }
 }
@@ -460,7 +443,7 @@ function addToWardrobe() {
     };
     
     myWardrobe.push(newItem);
-    localStorage.setItem('avenor_ai_wardrobe', JSON.stringify(myWardrobe));
+    localStorage.setItem('StyleCart_ai_wardrobe', JSON.stringify(myWardrobe));
     renderWardrobe();
     
     // Clear inputs
@@ -474,7 +457,7 @@ function addToWardrobe() {
 
 function removeFromWardrobe(id) {
     myWardrobe = myWardrobe.filter(x => x.id !== id);
-    localStorage.setItem('avenor_ai_wardrobe', JSON.stringify(myWardrobe));
+    localStorage.setItem('StyleCart_ai_wardrobe', JSON.stringify(myWardrobe));
     renderWardrobe();
     window.showNotification("Removed item from AI Wardrobe.", "info");
 }
@@ -494,12 +477,10 @@ async function getWardrobeSuggestions() {
     const randomOwned = myWardrobe[Math.floor(Math.random() * myWardrobe.length)];
     
     try {
-        const res = await fetch(`${AI_API_BASE}/stylist`, {
+        const data = await apiFetch('/ai/stylist', {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: `I own a ${randomOwned.color} ${randomOwned.name} made of ${randomOwned.material}. Recommend clothes to match and complete the look.` })
         });
-        const data = await res.json();
         
         if (data.success && data.products) {
             suggestionsGrid.innerHTML = `
@@ -538,23 +519,21 @@ async function triggerWeatherStyling() {
     container.innerHTML = `<p class="loading">🌤 Checking local weather conditions and styling...</p>`;
     
     try {
-        const res = await fetch(`${AI_API_BASE}/weather-style`, {
+        const data = await apiFetch('/ai-fashion/weather-style', {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ weather, temp })
         });
-        const data = await res.json();
         
         if (data.success && data.products) {
             container.innerHTML = `
                 <div class="weather-result-box">
-                    <h4>🌡 Suggested Outfit for ${data.weather} at ${data.temperature}°C:</h4>
+                    <h4>🌡 Suggested Outfit for ${escapeHTML(data.weather || '')} at ${data.temperature}°C:</h4>
                     <div class="product-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;margin-top:15px;">
                         ${data.products.map(p => `
                             <div class="styled-product-card" onclick="viewProductDetails(${p.id})">
-                                <img src="${p.image}" alt="${p.name}">
+                                <img src="${escapeHTML(p.image)}" alt="${escapeHTML(p.name)}">
                                 <div class="styled-info">
-                                    <h4>${p.name}</h4>
+                                    <h4>${escapeHTML(p.name)}</h4>
                                     <p class="styled-price">₹${p.price.toLocaleString('en-IN')}</p>
                                 </div>
                             </div>
@@ -576,12 +555,10 @@ async function askFashionGPT(question) {
     tipsBox.innerHTML = `<p class="loading">🧠 AI Fashion GPT is thinking...</p>`;
     
     try {
-        const res = await fetch("http://localhost:5001/api/chat", {
+        const data = await apiFetch('/chat', {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: question })
         });
-        const data = await res.json();
         
         let reply = data.reply || "I couldn't process this fashion query.";
         reply = reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -674,7 +651,7 @@ function triggerVisualSearch(sampleImageName) {
     }, 2000);
 }
 
-// ========== HELPER FUNCTIONS & AVENOR 2.0 CLIENT HANDLERS ==========
+// ========== HELPER FUNCTIONS & StyleCart 2.0 CLIENT HANDLERS ==========
 function switchTab(tabId) {
     document.querySelectorAll(".studio-tab").forEach(tab => {
         tab.classList.remove("active");
@@ -710,12 +687,10 @@ async function runShoppingAgent() {
     }
 
     try {
-        const res = await fetch("http://localhost:5001/api/ai/shopping-agent", {
+        const data = await apiFetch('/ai/shopping-agent', {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ goal })
         });
-        const data = await res.json();
 
         if (data.success && container) {
             const primaryHtml = (data.primaryLook?.products || []).map(p => `
@@ -786,20 +761,18 @@ async function generateCapsuleWardrobe() {
     }
 
     try {
-        const res = await fetch("http://localhost:5001/api/ai/capsule-wardrobe", {
+        const data = await apiFetch('/ai/capsule-wardrobe', {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ budget: parseInt(budget), season })
         });
-        const data = await res.json();
 
         if (data.success && container) {
             const itemsHtml = (data.capsuleItems || []).map(p => `
                 <div class="glassmorphism" style="padding:15px; border-radius:16px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.01); display:flex; align-items:center; gap:15px; cursor:pointer;" onclick="viewProductDetails(${p.id})">
-                    <img src="${p.image}" alt="${p.name}" style="width:50px; height:50px; border-radius:8px; object-fit:cover;">
+                    <img src="${escapeHTML(p.image)}" alt="${escapeHTML(p.name)}" style="width:50px; height:50px; border-radius:8px; object-fit:cover;">
                     <div style="flex:1;">
-                        <h5 style="margin:0; color:white; font-size:0.9rem;">${p.name}</h5>
-                        <span style="color:var(--muted); font-size:0.75rem;">${p.specs?.Material || 'Versatile Textile'}</span>
+                        <h5 style="margin:0; color:white; font-size:0.9rem;">${escapeHTML(p.name)}</h5>
+                        <span style="color:var(--muted); font-size:0.75rem;">${escapeHTML(p.specs?.Material || 'Versatile Textile')}</span>
                     </div>
                     <strong style="color:var(--maroon-light);">₹${p.price.toLocaleString()}</strong>
                 </div>
@@ -811,11 +784,11 @@ async function generateCapsuleWardrobe() {
                         <div>
                             <span class="ai-badge">CAPSULE EFFICIENCY</span>
                             <h3 style="color:white; margin:5px 0;">Unlocked ${data.possibleOutfitCount} Unique Outfits</h3>
-                            <p style="margin:0; color:var(--muted); font-size:0.85rem;">${data.summary}</p>
+                            <p style="margin:0; color:var(--muted); font-size:0.85rem;">${escapeHTML(data.summary || '')}</p>
                         </div>
                         <div style="text-align:right;">
                             <span style="font-size:0.8rem; color:var(--muted); display:block;">Total Investment:</span>
-                            <strong style="font-size:1.5rem; color:white;">₹${data.totalPrice.toLocaleString()}</strong>
+                            <strong style="font-size:1.5rem; color:white;">₹${(data.totalPrice || 0).toLocaleString()}</strong>
                         </div>
                     </div>
 
@@ -842,41 +815,39 @@ async function runStealThisLook(event) {
     container.innerHTML = `<p style="color:var(--muted); text-align:center;">🤖 AI Vision is parsing outfit elements & pricing tiers...</p>`;
 
     try {
-        const res = await fetch("http://localhost:5001/api/vision/steal-look", {
+        const data = await apiFetch('/vision/steal-look', {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ imageUrl: "upload" })
         });
-        const data = await res.json();
 
         if (data.success) {
             const elementsHtml = (data.detectedElements || []).map(e => `
                 <div style="background:rgba(255,255,255,0.02); padding:10px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.05); font-size:0.8rem; color:white;">
-                    <span style="color:var(--muted); font-size:0.75rem; display:block;">${e.category}</span>
-                    <strong>${e.title}</strong> (${e.confidence}% confidence)
+                    <span style="color:var(--muted); font-size:0.75rem; display:block;">${escapeHTML(e.category || '')}</span>
+                    <strong>${escapeHTML(e.title || '')}</strong> (${e.confidence}% confidence)
                 </div>
             `).join("");
 
             const matchProducts = (data.tiers?.match?.products || []).map(p => `
                 <div style="display:flex; align-items:center; gap:10px; font-size:0.8rem; margin-top:8px;">
-                    <img src="${p.image}" style="width:30px; height:30px; border-radius:4px; object-fit:cover;">
-                    <span style="color:white; flex:1;">${p.name}</span>
+                    <img src="${escapeHTML(p.image)}" style="width:30px; height:30px; border-radius:4px; object-fit:cover;">
+                    <span style="color:white; flex:1;">${escapeHTML(p.name)}</span>
                     <strong style="color:var(--maroon-light);">₹${p.price.toLocaleString()}</strong>
                 </div>
             `).join("");
 
             const budgetProducts = (data.tiers?.budget?.products || []).map(p => `
                 <div style="display:flex; align-items:center; gap:10px; font-size:0.8rem; margin-top:8px;">
-                    <img src="${p.image}" style="width:30px; height:30px; border-radius:4px; object-fit:cover;">
-                    <span style="color:white; flex:1;">${p.name}</span>
+                    <img src="${escapeHTML(p.image)}" style="width:30px; height:30px; border-radius:4px; object-fit:cover;">
+                    <span style="color:white; flex:1;">${escapeHTML(p.name)}</span>
                     <strong style="color:var(--maroon-light);">₹${p.price.toLocaleString()}</strong>
                 </div>
             `).join("");
 
             const premiumProducts = (data.tiers?.premium?.products || []).map(p => `
                 <div style="display:flex; align-items:center; gap:10px; font-size:0.8rem; margin-top:8px;">
-                    <img src="${p.image}" style="width:30px; height:30px; border-radius:4px; object-fit:cover;">
-                    <span style="color:white; flex:1;">${p.name}</span>
+                    <img src="${escapeHTML(p.image)}" style="width:30px; height:30px; border-radius:4px; object-fit:cover;">
+                    <span style="color:white; flex:1;">${escapeHTML(p.name)}</span>
                     <strong style="color:var(--maroon-light);">₹${p.price.toLocaleString()}</strong>
                 </div>
             `).join("");
@@ -895,7 +866,7 @@ async function runStealThisLook(event) {
                     </div>
 
                     <div class="glassmorphism" style="padding:20px; border-radius:16px; border:1px solid var(--maroon-light); background:rgba(143,29,45,0.05);">
-                        <span style="color:var(--maroon-light); font-weight:800; font-size:0.75rem;">AVENOR MATCH</span>
+                        <span style="color:var(--maroon-light); font-weight:800; font-size:0.75rem;">STYLECART MATCH</span>
                         <h4 style="color:white; margin:5px 0;">₹${(data.tiers?.match?.totalPrice || 0).toLocaleString()}</h4>
                         ${matchProducts}
                         <button class="btn primary" onclick="addBundleToCart(${JSON.stringify((data.tiers?.match?.products || []).map(p => p.id)).replace(/"/g, '&quot;')})" style="width:100%; margin-top:15px; padding:6px; font-size:0.75rem;">Shop Match Tier</button>
@@ -920,25 +891,24 @@ async function loadTrendIntelligence() {
     if (!container) return;
 
     try {
-        const res = await fetch("http://localhost:5001/api/trends");
-        const data = await res.json();
+        const data = await apiFetch('/trends');
 
         if (data.success) {
             const trendsHtml = (data.trends || []).map(t => `
                 <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:15px 20px; border-radius:14px; border:1px solid rgba(255,255,255,0.06); margin-bottom:12px;">
                     <div>
-                        <strong style="color:white; font-size:0.95rem; display:block;">${t.name}</strong>
-                        <span style="color:var(--muted); font-size:0.75rem;">${t.category}</span>
+                        <strong style="color:white; font-size:0.95rem; display:block;">${escapeHTML(t.name || '')}</strong>
+                        <span style="color:var(--muted); font-size:0.75rem;">${escapeHTML(t.category || '')}</span>
                     </div>
-                    <span style="padding:4px 12px; border-radius:99px; background:rgba(76, 175, 80, 0.15); color:#4CAF50; font-size:0.75rem; font-weight:700;">↑ ${t.velocity}</span>
+                    <span style="padding:4px 12px; border-radius:99px; background:rgba(76, 175, 80, 0.15); color:#4CAF50; font-size:0.75rem; font-weight:700;">↑ ${escapeHTML(t.velocity || '')}</span>
                 </div>
             `).join("");
 
             const trendingProdsHtml = (data.trendingProducts || []).map(p => `
                 <div style="display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.02); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.05); cursor:pointer;" onclick="viewProductDetails(${p.id})">
-                    <img src="${p.image}" style="width:40px; height:40px; border-radius:6px; object-fit:cover;">
+                    <img src="${escapeHTML(p.image)}" style="width:40px; height:40px; border-radius:6px; object-fit:cover;">
                     <div style="flex:1;">
-                        <h5 style="margin:0; color:white; font-size:0.85rem;">${p.name}</h5>
+                        <h5 style="margin:0; color:white; font-size:0.85rem;">${escapeHTML(p.name)}</h5>
                         <span style="color:var(--maroon-light); font-size:0.8rem; font-weight:700;">₹${p.price.toLocaleString()}</span>
                     </div>
                 </div>
@@ -963,27 +933,25 @@ async function loadTrendIntelligence() {
 
 async function resetAIMemory() {
     try {
-        await fetch("http://localhost:5001/api/ai/memory", { method: "DELETE" });
-        window.showNotification("AI Personalization memory reset.", "success");
+        await apiFetch('/ai/memory', { method: "DELETE" });
+        showNotification("AI Personalization memory reset.", "success");
     } catch (err) {
-        window.showNotification("Reset completed.", "info");
+        showNotification("Reset completed.", "info");
     }
 }
 
 function addBundleToCart(ids) {
-    if (!window.CartService) {
-        window.showNotification("Cart system is loading...", "info");
-        return;
-    }
+    if (!ids || !Array.isArray(ids)) return;
     
     ids.forEach(id => {
-        const prod = fashionCatalog.find(p => p.id === id);
-        if (prod) {
-            window.CartService.addToCart(prod);
+        if (window.addToCart) {
+            window.addToCart(id);
+        } else if (window.CartService) {
+            window.CartService.addToCart(id);
         }
     });
     
-    window.showNotification("Outfit Bundle added to cart!", "success");
+    showNotification(`Outfit Bundle (${ids.length} items) added to cart!`, "success");
 }
 
 function viewProductDetails(id) {
@@ -1107,7 +1075,7 @@ function handleWardrobeScanUpload(event) {
         };
         
         myWardrobe.push(newItem);
-        localStorage.setItem('avenor_ai_wardrobe', JSON.stringify(myWardrobe));
+        localStorage.setItem('StyleCart_ai_wardrobe', JSON.stringify(myWardrobe));
         renderWardrobe();
         
         // Reset file input
@@ -1128,7 +1096,7 @@ const communityPosts = [
         likes: 142,
         liked: false,
         comments: ["Dope styling Aarav!", "That jacket goes hard."],
-        explanation: "Urban Streetwear look featuring Avenor premium layers, olive twill cargo pants, and retro court court kicks.",
+        explanation: "Urban Streetwear look featuring StyleCart Premium layers, olive twill cargo pants, and retro court court kicks.",
         productIds: [23, 24, 31]
     },
     {
@@ -1139,7 +1107,7 @@ const communityPosts = [
         likes: 289,
         liked: false,
         comments: ["Stunning office outfit ideas", "Love the tan boots contrast"],
-        explanation: "Corporate Smart Casual fit displaying Avenor navy blazers, Supima t-shirts, and Italian suede Chelsea boots.",
+        explanation: "Corporate Smart Casual fit displaying StyleCart navy blazers, Supima t-shirts, and Italian suede Chelsea boots.",
         productIds: [26, 25, 29]
     },
     {

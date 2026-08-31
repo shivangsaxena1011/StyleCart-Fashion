@@ -1816,7 +1816,7 @@ footer p {
     }
 }
 
-/* ===== AVENOR NEXT-GEN AI FASHION HUB CUSTOM STYLING (APPLE 3D GLASSMORPHISM) ===== */
+/* ===== StyleCart NEXT-GEN AI FASHION HUB CUSTOM STYLING (APPLE 3D GLASSMORPHISM) ===== */
 
 .studio-container {
     width: min(1440px, calc(100% - 24px));
@@ -3242,4 +3242,85 @@ footer p {
     border-color: var(--maroon-light) !important;
     color: white !important;
     background: rgba(143, 29, 45, 0.05);
+}
+/* ========== PWA & MOBILE ENHANCEMENTS ========== */
+
+/* Safe area insets for notched phones */
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Touch-friendly tap targets (min 44px) */
+@media (max-width: 760px) {
+  .product-card .action-buttons button,
+  .btn,
+  .nav-pill,
+  .cart-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent horizontal overflow on mobile */
+  .product-grid,
+  .bento-grid,
+  .category-grid {
+    overflow-x: hidden;
+  }
+  
+  /* Better touch scrolling */
+  .market-strip,
+  .studio-sidebar {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Full-width cards on small screens */
+  .product-card {
+    min-width: 0;
+  }
+  
+  /* AI Fashion Hub mobile layout */
+  .studio-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0 8px;
+  }
+  
+  .studio-sidebar {
+    border-radius: 20px;
+    padding: 20px 16px;
+  }
+  
+  .studio-panel {
+    padding: 20px;
+    border-radius: 20px;
+  }
+  
+  /* Improve product detail on mobile */
+  .product-detail-page {
+    padding: 20px 16px;
+  }
+  
+  .product-detail-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Prevent text selection on interactive elements */
+.btn, .nav-pill, .cart-btn, .wishlist, .quick-view-btn, .compare-btn {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth scrolling for all containers */
+* {
+  scroll-behavior: smooth;
+}
+
+/* PWA standalone mode adjustments */
+@media (display-mode: standalone) {
+  .navbar {
+    padding-top: max(18px, env(safe-area-inset-top));
+  }
 }

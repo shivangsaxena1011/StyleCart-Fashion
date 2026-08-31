@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wishlist | Avenor</title>
+    <title>Wishlist | StyleCart</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .wishlist-page {
@@ -81,13 +81,19 @@
             }
         }
     </style>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8f1d2d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
     <div class="page-glow"></div>
 
     <nav class="navbar">
-        <a href="index.html" class="logo">AVENOR</a>
+        <a href="index.html" class="logo">StyleCart</a>
 
         <button class="menu-btn" id="menuBtn" aria-label="Open menu">
             <span></span>
@@ -140,7 +146,7 @@
 
     <footer>
         <div>
-            <a href="index.html" class="logo">AVENOR</a>
+            <a href="index.html" class="logo">StyleCart</a>
             <p>AI powered marketplace for smarter shopping, better comparison, and personalized product discovery.</p>
         </div>
         <div class="footer-links">
@@ -167,13 +173,23 @@
     <script src="threeScene.js"></script>
     <script src="app.js"></script>
     <script>
-        setTimeout(renderWishlist, 450);
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (window.ProductService && window.ProductService.init) {
+                try {
+                    await window.ProductService.init();
+                } catch(e) {}
+            }
+            renderWishlist();
+        });
 
         function renderWishlist() {
             const container = document.getElementById('wishlistGrid');
             const subtitle = document.getElementById('wishlistSubtitle');
+            if (!container) return;
 
-            if (wishlist.length === 0) {
+            const list = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+            if (list.length === 0) {
                 container.innerHTML = `
                     <div class="empty-wishlist">
                         <div class="icon">❤️</div>
@@ -182,26 +198,27 @@
                         <a href="index.html" class="shop-btn">Browse Products</a>
                     </div>
                 `;
-                subtitle.textContent = 'No items saved yet';
+                if (subtitle) subtitle.textContent = 'No items saved yet';
                 return;
             }
 
-            subtitle.textContent = `You have ${wishlist.length} items in your wishlist`;
+            if (subtitle) subtitle.textContent = `You have ${list.length} items in your wishlist`;
 
-            const wishlistProducts = allProducts.filter(p => wishlist.includes(p.id));
+            const allProds = window.ProductService ? window.ProductService.getAllProducts() : [];
+            const wishlistProducts = allProds.filter(p => list.includes(p.id));
 
             container.innerHTML = wishlistProducts.map(product => `
                 <article class="product-card tilt-card reveal">
                     <div class="product-image">
-                        <span class="discount-badge">${product.discount}</span>
+                        <span class="discount-badge">${escapeHTML(product.discount || 'SALE')}</span>
                         <button class="wishlist active" onclick="toggleWishlist(${product.id});renderWishlist();" 
                                 aria-label="Remove from wishlist">♥</button>
-                        <img src="${product.image}" alt="${product.name}" style="width:100%;height:200px;object-fit:cover;"
+                        <img src="${escapeHTML(product.image)}" alt="${escapeHTML(product.name)}" style="width:100%;height:200px;object-fit:cover;"
                              onerror="this.src='https://via.placeholder.com/300x200/5b101b/ffffff?text=${encodeURIComponent(product.name)}'">
                     </div>
                     <div class="product-info">
-                        <p class="label">${product.category}</p>
-                        <h3 onclick="goToProduct(${product.id})" style="cursor:pointer;">${product.name}</h3>
+                        <p class="label">${escapeHTML(product.category)}</p>
+                        <h3 onclick="goToProduct(${product.id})" style="cursor:pointer;">${escapeHTML(product.name)}</h3>
                         <p class="rating">★ ${product.rating} rating</p>
                         <div class="price-row">
                             <strong>₹${product.price.toLocaleString()}</strong>
@@ -212,5 +229,6 @@
             `).join('');
         }
     </script>
+    <script src="install-prompt.js"></script>
 </body>
 </html>

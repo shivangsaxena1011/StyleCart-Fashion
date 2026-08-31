@@ -29,7 +29,7 @@ async function processPayment(e) {
     
     const cart = window.cart;
     const address = JSON.parse(localStorage.getItem('checkoutAddress')) || {};
-    const email = localStorage.getItem('checkoutEmail') || "guest@avenor.com";
+    const email = localStorage.getItem('checkoutEmail') || "guest@StyleCart.com";
     const name = localStorage.getItem('checkoutName') || "Guest Customer";
     
     const subtotal = parseInt(localStorage.getItem('checkoutSubtotal')) || 0;
@@ -48,17 +48,10 @@ async function processPayment(e) {
     };
     
     try {
-        const token = localStorage.getItem('token');
-        const headers = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = `Bearer ${token}`;
-        
-        const response = await fetch('http://localhost:5001/api/orders', {
+        const data = await apiFetch('/orders', {
             method: 'POST',
-            headers,
             body: JSON.stringify(orderPayload)
         });
-        
-        const data = await response.json();
         
         if (data.success && data.order) {
             // Save current order and add to list of orders in localStorage

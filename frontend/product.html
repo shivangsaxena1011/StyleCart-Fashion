@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Details | Avenor</title>
+    <title>Product Details | StyleCart</title>
     <link rel="stylesheet" href="style.css">
     <style>
         /* ===== BREADCRUMB ===== */
@@ -513,6 +513,12 @@
             }
         }
     </style>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8f1d2d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
@@ -520,7 +526,7 @@
 
     <!-- ===== NAVBAR - UPDATED ===== -->
     <nav class="navbar">
-        <a href="index.html" class="logo">AVENOR</a>
+        <a href="index.html" class="logo">StyleCart</a>
 
         <button class="menu-btn" id="menuBtn" aria-label="Open menu">
             <span></span>
@@ -594,7 +600,7 @@
 
     <footer>
         <div>
-            <a href="index.html" class="logo">AVENOR</a>
+            <a href="index.html" class="logo">StyleCart</a>
             <p>AI powered marketplace for smarter shopping, better comparison, and personalized product discovery.</p>
         </div>
         <div class="footer-links">
@@ -621,47 +627,20 @@
     <script src="threeScene.js"></script>
     <script src="app.js"></script>
     <script>
-        // Wait for productService to be ready
-        setTimeout(initPage, 450);
-
         let product = null;
 
-        const sampleReviews = [
-            {
-                reviewer: "Rahul Sharma",
-                date: "December 20, 2024",
-                rating: 5,
-                text: "Absolutely amazing product! Exceeded all my expectations. The quality is top-notch and the performance is outstanding. Would definitely recommend to anyone looking for premium quality.",
-                helpful: 42
-            },
-            {
-                reviewer: "Priya Patel",
-                date: "December 15, 2024",
-                rating: 4,
-                text: "Great product overall. A few minor issues with the packaging but the product itself works perfectly. Customer service was very helpful when I had questions.",
-                helpful: 28
-            },
-            {
-                reviewer: "Amit Kumar",
-                date: "December 10, 2024",
-                rating: 5,
-                text: "This is my second purchase from Avenor and I'm impressed again. The product quality is consistent and the AI recommendations are spot on. Keep up the good work!",
-                helpful: 35
-            },
-            {
-                reviewer: "Sneha Reddy",
-                date: "December 5, 2024",
-                rating: 4,
-                text: "Good value for money. The product arrived on time and works as described. The only reason I'm not giving 5 stars is the battery life could be better.",
-                helpful: 19
-            }
-        ];
+        document.addEventListener('DOMContentLoaded', initPage);
 
-        function initPage() {
+        async function initPage() {
+            if (window.ProductService && window.ProductService.init) {
+                try {
+                    await window.ProductService.init();
+                } catch(e) {}
+            }
             const params = new URLSearchParams(window.location.search);
-            const productId = parseInt(params.get('id'));
+            const productId = parseInt(params.get('id'), 10);
             
-            product = window.ProductService.getProductById(productId);
+            product = window.ProductService ? window.ProductService.getProductById(productId) : null;
 
             if (product) {
                 // Add to recently viewed list
@@ -784,7 +763,7 @@
                         <div class="spec-grid">
                             <div class="spec-item">
                                 <span class="spec-label">Brand</span>
-                                <span class="spec-value">${product.brand || 'Avenor Premium'}</span>
+                                <span class="spec-value">${product.brand || 'StyleCart Premium'}</span>
                             </div>
                             <div class="spec-item">
                                 <span class="spec-label">Category</span>
@@ -894,10 +873,10 @@
             newSec.style.cssText = 'margin-top:60px;padding-top:40px;border-top:1px solid rgba(255,255,255,0.08);';
             newSec.innerHTML = `
                 <h2 style="font-size:2rem;margin-bottom:30px;display:flex;align-items:center;gap:12px;">
-                    <span>🤖</span> Avenor AI Smart Picks for ${currentProduct.name}
+                    <span>🤖</span> StyleCart AI Smart Picks for ${currentProduct.name}
                 </h2>
                 <div id="aiRecsGrid" class="related-grid">
-                    <div style="grid-column:1/-1;text-align:center;color:var(--muted);">🤖 Avenor AI is selecting matching specs...</div>
+                    <div style="grid-column:1/-1;text-align:center;color:var(--muted);">🤖 StyleCart AI is selecting matching specs...</div>
                 </div>
             `;
             
@@ -907,12 +886,10 @@
             }
             
             try {
-                const response = await fetch('http://localhost:5001/api/ai-search', {
+                const data = await apiFetch('/ai-search', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: `accessories or alternatives for ${currentProduct.name} ${currentProduct.category}` })
                 });
-                const data = await response.json();
                 const grid = document.getElementById('aiRecsGrid');
                 if (data.recommendations && data.recommendations.length > 0 && grid) {
                     grid.innerHTML = data.recommendations.map(p => window.createProductCard(p, 'aiRecsGrid')).join('');
@@ -1002,20 +979,19 @@
             container.style.display = 'block';
             container.innerHTML = `
                 <div style="text-align:center; color:var(--muted); padding:10px 0;">
-                    🤖 Avenor AI is synthesizing reviews...
+                    🤖 StyleCart AI is synthesizing reviews...
                 </div>
             `;
             
             try {
-                const res = await fetch(`http://localhost:5001/api/products/${currentProduct.id}/review-summary`);
-                const data = await res.json();
+                const data = await apiFetch(`/products/${currentProduct.id}/review-summary`);
                 
                 if (data.success && data.summary) {
                     const s = data.summary;
                     container.innerHTML = `
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:15px; flex-wrap:wrap; gap:15px;">
                             <h3 style="font-size:1.35rem; margin:0; display:flex; align-items:center; gap:10px; color:white;">
-                                <span>🤖</span> Avenor AI Review Analyst
+                                <span>🤖</span> StyleCart AI Review Analyst
                             </h3>
                             <div style="display:flex; align-items:center; gap:10px;">
                                 <span style="font-size:0.9rem; color:var(--muted);">Sentiment Score:</span>
@@ -1023,25 +999,25 @@
                             </div>
                         </div>
                         
-                        <p style="color:var(--muted); font-size:0.95rem; line-height:1.6; margin-bottom:25px; font-style:italic;">"${s.summary}"</p>
+                        <p style="color:var(--muted); font-size:0.95rem; line-height:1.6; margin-bottom:25px; font-style:italic;">"${escapeHTML(s.summary)}"</p>
                         
                         <div style="display:grid; grid-template-columns:1.2fr 0.8fr; gap:25px; margin-bottom:20px;">
                             <div>
                                 <h4 style="color:#4caf50; font-size:0.95rem; margin-bottom:12px; font-weight:800;">👍 PROS</h4>
                                 <ul style="margin:0; padding-left:20px; color:var(--muted); font-size:0.85rem; line-height:1.6; list-style-type:square;">
-                                    ${s.pros.map(p => `<li style="margin-bottom:6px;">${p}</li>`).join('')}
+                                    ${(s.pros || []).map(p => `<li style="margin-bottom:6px;">${escapeHTML(p)}</li>`).join('')}
                                 </ul>
                             </div>
                             <div>
                                 <h4 style="color:#f44336; font-size:0.95rem; margin-bottom:12px; font-weight:800;">👎 CONS</h4>
                                 <ul style="margin:0; padding-left:20px; color:var(--muted); font-size:0.85rem; line-height:1.6; list-style-type:square;">
-                                    ${s.cons.map(c => `<li style="margin-bottom:6px;">${c}</li>`).join('')}
+                                    ${(s.cons || []).map(c => `<li style="margin-bottom:6px;">${escapeHTML(c)}</li>`).join('')}
                                 </ul>
                             </div>
                         </div>
                         
                         <div style="border-top:1px solid rgba(255,255,255,0.06); padding-top:15px; font-size:0.85rem; color:#ff9800; font-weight:600; display:flex; align-items:center; gap:8px;">
-                            <span>📏</span> Size Advice: ${s.sizeRecommendation}
+                            <span>📏</span> Size Advice: ${escapeHTML(s.sizeRecommendation || '')}
                         </div>
                     `;
                 }
@@ -1066,12 +1042,10 @@
             }
 
             try {
-                const [intelRes, sustRes] = await Promise.all([
-                    fetch(`http://localhost:5001/api/products/${currentProduct.id}/intelligence`),
-                    fetch(`http://localhost:5001/api/products/${currentProduct.id}/sustainability`)
+                const [intel, sust] = await Promise.all([
+                    apiFetch(`/products/${currentProduct.id}/intelligence`),
+                    apiFetch(`/products/${currentProduct.id}/sustainability`)
                 ]);
-                const intel = await intelRes.json();
-                const sust = await sustRes.json();
 
                 if (intel.success && intel.intelligence) {
                     const data = intel.intelligence;
@@ -1103,7 +1077,7 @@
                             </div>
 
                             <div>
-                                <h4 style="color:#4CAF50; font-size:0.95rem; margin-bottom:10px; font-weight:800;">🌱 AVENOR IMPACT & SUSTAINABILITY</h4>
+                                <h4 style="color:#4CAF50; font-size:0.95rem; margin-bottom:10px; font-weight:800;">🌱 StyleCart IMPACT & SUSTAINABILITY</h4>
                                 <p style="color:var(--muted); font-size:0.85rem; margin-bottom:8px;"><strong>Material:</strong> ${impact.material || 'Organic Cotton'}</p>
                                 <p style="color:var(--muted); font-size:0.85rem; margin-bottom:8px;"><strong>Durability Rating:</strong> ${impact.durabilityRating || 'A+ High Longevity'}</p>
                                 <p style="color:var(--muted); font-size:0.85rem; margin-bottom:0;"><strong>Wardrobe Pairings:</strong> ${data.wardrobeCompatibility?.message}</p>
@@ -1180,7 +1154,7 @@
 
             container.innerHTML = `
                 <h4 style="font-size:1.1rem; margin-bottom:12px; color:white; font-weight:800;">🛍 Buy the Complete Outfit Look</h4>
-                <p style="color:var(--muted); font-size:0.8rem; margin-bottom:15px; line-height:1.4;">Avenor AI matched this item with coordinating apparel to complete your visual style.</p>
+                <p style="color:var(--muted); font-size:0.8rem; margin-bottom:15px; line-height:1.4;">StyleCart AI matched this item with coordinating apparel to complete your visual style.</p>
                 
                 <div style="margin-bottom:20px;">
                     ${itemsHTML}
@@ -1210,5 +1184,6 @@
         }
         window.buyCompleteLook = buyCompleteLook;
     </script>
+    <script src="install-prompt.js"></script>
 </body>
 </html>

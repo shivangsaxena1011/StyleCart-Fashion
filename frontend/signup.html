@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up | Avenor</title>
+    <title>Sign Up | StyleCart</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .auth-page {
@@ -127,13 +127,19 @@
             }
         }
     </style>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8f1d2d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
     <div class="page-glow"></div>
 
     <nav class="navbar">
-        <a href="index.html" class="logo">AVENOR</a>
+        <a href="index.html" class="logo">StyleCart</a>
 
         <button class="menu-btn" id="menuBtn" aria-label="Open menu">
             <span></span>
@@ -175,7 +181,7 @@
 
     <div class="auth-page">
         <div class="auth-container">
-            <a href="index.html" class="logo">AVENOR</a>
+            <a href="index.html" class="logo">StyleCart</a>
             <h1>Create Account</h1>
             <p class="subtitle">Join the AI-powered marketplace</p>
 
@@ -203,6 +209,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="utils.js"></script>
     <script src="script.js"></script>
     <script>
         async function handleSignup(e) {
@@ -213,24 +220,24 @@
             const password = inputs[2].value;
 
             try {
-                const response = await fetch('http://localhost:5001/api/auth/signup', {
+                const data = await apiFetch('/auth/signup', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, email, password })
                 });
-                const data = await response.json();
                 if (data.success) {
-                    alert('✅ Account created successfully! Redirecting to login...');
-                    window.location.href = 'login.html';
+                    showNotification('✅ Account created successfully! Redirecting to login...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1000);
                 } else {
-                    alert('❌ Registration failed: ' + data.message);
+                    showNotification('❌ Registration failed: ' + (data.error?.message || data.message || 'Invalid details'), 'error');
                 }
             } catch (err) {
                 console.error(err);
-                alert('❌ Server offline. Account created locally (Demo Mode).');
-                window.location.href = 'login.html';
+                showNotification('❌ Server error during registration.', 'error');
             }
         }
     </script>
+    <script src="install-prompt.js"></script>
 </body>
 </html>
