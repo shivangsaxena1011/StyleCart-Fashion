@@ -197,32 +197,36 @@
                 <article class="bento-card large tilt-card">
                     <span class="card-kicker">AI Product Search</span>
                     <h3>Find products using natural language</h3>
-                    <p>Search like a real conversation: "best phone under ₹30,000", "formal shoes for office", or "gaming laptop under ₹70,000".</p>
-                    <button class="mini-btn">Search With AI</button>
+                    <p>Search like a real conversation: "best phone under ₹30,000", "wireless earbuds under ₹1999", or "kurtas under ₹500".</p>
+                    <button class="mini-btn" onclick="startAISearch('wireless earbuds under ₹1999')">Search With AI</button>
                 </article>
 
                 <article class="bento-card tall tilt-card">
                     <span class="card-kicker">AI Comparison</span>
                     <h3>Compare before buying</h3>
                     <p>StyleCart helps compare price, rating, features, reviews, and value for money.</p>
+                    <button class="mini-btn" onclick="window.location.href='compare.html'">Compare Products</button>
                 </article>
 
                 <article class="bento-card tilt-card">
                     <span class="card-kicker">AI Stylist</span>
                     <h3>Fashion guidance</h3>
                     <p>Get outfit suggestions for occasions, colors, budget, and personal style.</p>
+                    <button class="mini-btn" onclick="window.location.href='ai.html'">Open Stylist</button>
                 </article>
 
                 <article class="bento-card tilt-card">
                     <span class="card-kicker">AI Assistant</span>
                     <h3>Shopping help</h3>
                     <p>Ask what to buy, what to avoid, and what gives the best value.</p>
+                    <button class="mini-btn" onclick="window.toggleAIAssistant()">Chat With AI</button>
                 </article>
 
                 <article class="bento-card wide tilt-card">
                     <span class="card-kicker">Marketplace Engine</span>
                     <h3>Fast browsing, better choices, smarter recommendations</h3>
                     <p>StyleCart combines marketplace shopping with AI discovery, product suggestions, comparison, wishlist, cart, orders, and admin management.</p>
+                    <button class="mini-btn" onclick="document.getElementById('flash').scrollIntoView({behavior:'smooth'})">Explore Deals</button>
                 </article>
             </div>
         </section>
@@ -258,16 +262,16 @@
 
         <section class="product-section" id="flash">
             <div class="section-head">
-                <p class="eyebrow">Flash Deals</p>
-                <h2>Limited time offers</h2>
+                <p class="eyebrow">Today's Best Deals</p>
+                <h2>Crazy Low Prices — Under ₹199 & ₹499</h2>
             </div>
             <div class="product-grid" id="flashDeals"></div>
         </section>
 
         <section class="product-section" id="trending">
             <div class="section-head">
-                <p class="eyebrow">Trending Products</p>
-                <h2>Popular right now</h2>
+                <p class="eyebrow">Trending Now</p>
+                <h2>Customers' Most-Loved Products</h2>
             </div>
             <div class="product-grid" id="trendingProducts"></div>
         </section>
@@ -275,47 +279,47 @@
         <section class="product-section" id="recommended">
             <div class="section-head">
                 <p class="eyebrow">Recommended For You</p>
-                <h2>Smart picks by StyleCart AI</h2>
+                <h2>Smart AI Picks Based On Your Style</h2>
             </div>
             <div class="product-grid" id="recommendedProducts"></div>
         </section>
 
         <section class="product-section" id="electronics">
             <div class="section-head">
-                <p class="eyebrow">Top Rated Electronics</p>
-                <h2>Performance products worth buying</h2>
+                <p class="eyebrow">Best Deals on Electronics</p>
+                <h2>Smartphones, Audio, Wearables & Gadgets</h2>
             </div>
             <div class="product-grid" id="electronicsProducts"></div>
         </section>
 
         <section class="product-section" id="luxury">
             <div class="section-head">
-                <p class="eyebrow">Luxury Collection</p>
-                <h2>Premium picks with a sharp finish</h2>
+                <p class="eyebrow">Fashion Under ₹999</p>
+                <h2>Kurtas, T-Shirts, Sneakers & Handbags Starting ₹299</h2>
             </div>
             <div class="product-grid" id="luxuryProducts"></div>
         </section>
 
         <section class="product-section" id="best">
             <div class="section-head">
-                <p class="eyebrow">Bestsellers</p>
-                <h2>Most popular choices</h2>
+                <p class="eyebrow">Home Essentials Under ₹499</p>
+                <h2>Cookware, Bedsheets, Lamps & Clocks</h2>
             </div>
-            <div class="product-grid" id="bestSellers"></div>
+            <div class="product-grid" id="homeProducts"></div>
         </section>
 
         <section class="product-section" id="new">
             <div class="section-head">
-                <p class="eyebrow">New Arrivals</p>
-                <h2>Freshly dropped luxury items</h2>
+                <p class="eyebrow">Sports, Books & Daily Needs</p>
+                <h2>Fitness Gear, Best-Selling Novels & Groceries</h2>
             </div>
             <div class="product-grid" id="newArrivals"></div>
         </section>
 
         <section class="product-section" id="featured">
             <div class="section-head">
-                <p class="eyebrow">Featured Products</p>
-                <h2>Handpicked premium selections</h2>
+                <p class="eyebrow">Top Rated Products</p>
+                <h2>Up to 70% Off On Verified Favorites</h2>
             </div>
             <div class="product-grid" id="featuredProducts"></div>
         </section>

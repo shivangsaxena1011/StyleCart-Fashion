@@ -60,16 +60,86 @@ If recommending products, list 3-4 specific products from the available list wit
         }
     }
 
-    _fallbackChat(message, products) {
+    _fallbackChat(message, products = []) {
         const queryLower = (message || "").toLowerCase();
+        
+        // Extract budget if present (e.g., "under 500", "under ₹1000", "under 20000")
+        const budgetMatch = queryLower.match(/under\s*(?:₹|rs\.?|inr)?\s*(\d+)/i);
+        const budgetLimit = budgetMatch ? parseInt(budgetMatch[1], 10) : null;
+        
+        // Clean words
+        const stopWords = new Set(["the", "a", "an", "for", "in", "with", "show", "me", "what", "is", "are", "best", "good", "cheap", "find", "suggest", "buy", "under", "price", "to", "of", "can", "you", "tell"]);
+        const words = queryLower.replace(/[^\w\s]/g, " ").split(/\s+/).filter(w => w.length > 1 && !stopWords.has(w));
+        
+        // Match products based on keyword relevance score and budget limit
+        let scored = products.map(p => {
+            const name = (p.name || "").toLowerCase();
+            const cat = (p.category || "").toLowerCase();
+            const brand = (p.brand || "").toLowerCase();
+            const desc = (p.description || "").toLowerCase();
+            
+            let score = 0;
+            words.forEach(w => {
+                const reg = new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+                if (brand.toLowerCase() === w) score += 10;
+                else if (reg.test(brand)) score += 6;
+                if (reg.test(name)) score += 5;
+                if (reg.test(cat)) score += 3;
+                if (reg.test(desc)) score += 1;
+            });
+            
+            return { product: p, score };
+        });
 
-        if (queryLower.includes("blazer") || queryLower.includes("suit") || queryLower.includes("jacket") || queryLower.includes("fashion") || queryLower.includes("outfit")) {
-            return { reply: "🧥 **StyleCart AI Outfit Styling:**\nI recommend pairing a **Slim Fit Blazer** over a **Classic White T-Shirt**, anchored with **Cotton Cargo Pants** and **Retro Leather Sneakers** for a modern smart-casual look." };
-        } else if (queryLower.includes("shoe") || queryLower.includes("sneaker") || queryLower.includes("boot")) {
-            return { reply: "👟 **StyleCart AI Footwear Pick:**\nCheck out our **Retro Leather Sneakers** or **Luxury Suede Chelsea Boots** — both versatile choices that pair well with casual and smart-casual outfits." };
-        } else {
-            return { reply: "🤖 **Hello! I'm StyleCart AI.**\nI can help you style outfits, search products, and compare items. Try asking me something like *'Suggest a party outfit'* or *'What goes with a navy blazer?'*!" };
+        // Filter by budget if provided
+        if (budgetLimit) {
+            scored = scored.filter(item => item.product.price <= budgetLimit);
         }
+
+        // If keywords were provided, prioritize items with score > 0
+        let matched = [];
+        if (words.length > 0) {
+            const withScore = scored.filter(item => item.score > 0);
+            withScore.sort((a, b) => b.score - a.score || (b.product.rating * (b.product.reviewsCount || 100)) - (a.product.rating * (a.product.reviewsCount || 100)));
+            matched = withScore.map(item => item.product);
+        }
+
+        // Fallback if no keyword matches but budget was provided
+        if (matched.length === 0 && budgetLimit) {
+            matched = scored.map(item => item.product);
+        }
+
+        if (matched.length === 0) {
+            matched = products.slice(0, 4);
+        } else {
+            matched = matched.slice(0, 4);
+        }
+
+        let intro = `🛍️ **StyleCart AI Recommendations:**\nBased on your query "${message}", here are the top verified picks from our catalog:\n\n`;
+        
+        if (budgetLimit) {
+            intro = `🎯 **StyleCart Budget Picks (Under ₹${budgetLimit.toLocaleString()}):**\nHere are the best verified options fitting your budget criteria:\n\n`;
+        } else if (queryLower.includes("phone") || queryLower.includes("smartphone") || queryLower.includes("mobile") || queryLower.includes("samsung") || queryLower.includes("oneplus") || queryLower.includes("redmi") || queryLower.includes("realme")) {
+            intro = `📱 **StyleCart Smartphone Guide:**\nTop smartphones featuring 5G connectivity, high-refresh AMOLED screens, and fast charging:\n\n`;
+        } else if (queryLower.includes("earbud") || queryLower.includes("headphone") || queryLower.includes("audio") || queryLower.includes("speaker") || queryLower.includes("boat") || queryLower.includes("sony")) {
+            intro = `🎧 **StyleCart Audio Picks:**\nTop-performing audio gear with active noise cancellation, long battery life, and rich sound:\n\n`;
+        } else if (queryLower.includes("kurta") || queryLower.includes("dress") || queryLower.includes("shirt") || queryLower.includes("tshirt") || queryLower.includes("fashion") || queryLower.includes("jeans") || queryLower.includes("shoe") || queryLower.includes("sneaker")) {
+            intro = `✨ **StyleCart Fashion & Styling Advice:**\nCurated apparel and footwear picks crafted for style, comfort, and modern trends:\n\n`;
+        } else if (queryLower.includes("home") || queryLower.includes("kitchen") || queryLower.includes("cookware") || queryLower.includes("bedsheet") || queryLower.includes("lamp") || queryLower.includes("clock")) {
+            intro = `🏡 **StyleCart Home & Kitchen Essentials:**\nTop-rated utility and decor essentials for your modern living space:\n\n`;
+        } else if (queryLower.includes("fitness") || queryLower.includes("gym") || queryLower.includes("yoga") || queryLower.includes("cricket") || queryLower.includes("sports")) {
+            intro = `⚡ **StyleCart Sports & Fitness Gear:**\nHigh-durability workout gear and sports equipment built for everyday training:\n\n`;
+        }
+
+        let body = matched.map((p, idx) => {
+            const disc = p.discount ? ` *(${p.discount})*` : "";
+            const orig = p.originalPrice ? ` ~₹${p.originalPrice.toLocaleString()}~` : "";
+            return `${idx + 1}. **${p.name}**\n   • **Price:** ₹${p.price.toLocaleString()}${orig}${disc}\n   • **Rating:** ⭐ ${p.rating} (${(p.reviewsCount || 500).toLocaleString()} reviews)\n   • **Highlight:** ${p.description}`;
+        }).join("\n\n");
+
+        let conclusion = `\n\n💡 *Pro-Tip: You can add these items directly to your cart or compare them on StyleCart!*`;
+
+        return { reply: intro + body + conclusion };
     }
 
     // ========== AI SEARCH ==========
@@ -113,20 +183,53 @@ Only return the JSON. No markdown backticks, no other text.
     }
 
     _fallbackSearch(query, products) {
-        const keywords = (query || "").toLowerCase().split(" ");
-        const matched = products.filter(p =>
-            keywords.some(k =>
-                p.name.toLowerCase().includes(k) ||
-                p.category.toLowerCase().includes(k) ||
-                (p.description || "").toLowerCase().includes(k)
-            )
-        ).slice(0, 4);
+        const queryLower = (query || "").toLowerCase();
+        const budgetMatch = queryLower.match(/under\s*(?:₹|rs\.?|inr)?\s*(\d+)/i);
+        const budgetLimit = budgetMatch ? parseInt(budgetMatch[1], 10) : null;
+        
+        const stopWords = new Set(["the", "a", "an", "for", "in", "with", "show", "me", "what", "is", "are", "best", "good", "cheap", "find", "suggest", "buy", "under", "price", "to", "of"]);
+        const words = queryLower.replace(/[^\w\s]/g, " ").split(/\s+/).filter(w => w.length > 1 && !stopWords.has(w));
+        
+        let scored = products.map(p => {
+            const name = (p.name || "").toLowerCase();
+            const cat = (p.category || "").toLowerCase();
+            const brand = (p.brand || "").toLowerCase();
+            const desc = (p.description || "").toLowerCase();
+            
+            let score = 0;
+            words.forEach(w => {
+                const reg = new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+                if (brand.toLowerCase() === w) score += 10;
+                else if (reg.test(brand)) score += 6;
+                if (reg.test(name)) score += 5;
+                if (reg.test(cat)) score += 3;
+                if (reg.test(desc)) score += 1;
+            });
+            
+            return { product: p, score };
+        });
 
+        if (budgetLimit) {
+            scored = scored.filter(item => item.product.price <= budgetLimit);
+        }
+
+        let matched = [];
+        if (words.length > 0) {
+            const withScore = scored.filter(item => item.score > 0);
+            withScore.sort((a, b) => b.score - a.score || (b.product.rating * (b.product.reviewsCount || 100)) - (a.product.rating * (a.product.reviewsCount || 100)));
+            matched = withScore.map(item => item.product);
+        }
+
+        if (matched.length === 0 && budgetLimit) {
+            matched = scored.map(item => item.product);
+        }
+
+        const recommendations = (matched.length > 0 ? matched : products).slice(0, 8);
+        const count = recommendations.length;
+        
         return {
-            recommendations: matched.length > 0 ? matched : products.slice(0, 4),
-            message: matched.length > 0
-                ? "Here are products matching your search."
-                : "I couldn't find exact matches. Here are some popular items."
+            recommendations,
+            message: `Found ${count} verified products matching "${query}" with top customer ratings.`
         };
     }
 

@@ -24,7 +24,7 @@ html {
 body {
     min-height: 100vh;
     font-family: Inter, Arial, sans-serif;
-    font-size: 18px;
+    font-size: 15px;
     background: var(--black);
     color: var(--white);
     overflow-x: hidden;
@@ -392,22 +392,22 @@ body::before {
 
 .hero h1 {
     max-width: 860px;
-    font-size: clamp(5.4rem, 9.8vw, 9.7rem);
-    line-height: 0.88;
-    letter-spacing: -2.6px;
-    font-weight: 950;
+    font-size: clamp(2.4rem, 4.8vw, 3.6rem);
+    line-height: 1.1;
+    letter-spacing: -1.2px;
+    font-weight: 900;
     text-shadow:
-        0 16px 60px rgba(0, 0, 0, 0.55),
-        0 0 34px rgba(143, 29, 45, 0.25);
+        0 14px 45px rgba(0, 0, 0, 0.55),
+        0 0 24px rgba(143, 29, 45, 0.25);
 }
 
 .hero-text {
-    max-width: 780px;
-    margin: 32px 0;
+    max-width: 720px;
+    margin: 20px 0 24px;
     color: var(--muted);
-    font-size: 1.5rem;
-    font-weight: 500;
-    line-height: 1.8;
+    font-size: 1.05rem;
+    font-weight: 450;
+    line-height: 1.65;
 }
 
 .ai-search-panel {
@@ -582,31 +582,31 @@ footer {
 .categories,
 .bento-section,
 .product-section {
-    padding: 88px 6vw;
+    padding: 48px 6vw;
 }
 
 .section-head {
     max-width: 900px;
-    margin-bottom: 42px;
+    margin-bottom: 28px;
 }
 
 .section-head h2 {
-    font-size: clamp(3.8rem, 6.5vw, 6.4rem);
-    line-height: 1;
-    letter-spacing: -1.6px;
-    font-weight: 950;
+    font-size: clamp(1.75rem, 3vw, 2.35rem);
+    line-height: 1.2;
+    letter-spacing: -0.8px;
+    font-weight: 850;
 }
 
 .category-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
+    gap: 20px;
 }
 
 .category-card {
-    min-height: 260px;
-    padding: 38px;
-    border-radius: 28px;
+    min-height: 200px;
+    padding: 24px 22px;
+    border-radius: 22px;
     transition: 0.3s ease;
     cursor: pointer;
 }
@@ -616,43 +616,43 @@ footer {
 .label {
     color: #ffd6dc;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: 0.92rem;
-    font-weight: 850;
+    letter-spacing: 1.5px;
+    font-size: 0.82rem;
+    font-weight: 800;
 }
 
 .category-icon {
-    margin: 22px 0 12px;
-    font-size: 3rem;
+    margin: 12px 0 8px;
+    font-size: 2.2rem;
 }
 
 .category-card h3 {
-    margin-bottom: 14px;
-    font-size: 2.25rem;
-    font-weight: 950;
+    margin-bottom: 8px;
+    font-size: 1.22rem;
+    font-weight: 850;
 }
 
 .category-card p,
 .bento-card p {
     color: var(--muted);
-    font-size: 1.18rem;
-    line-height: 1.7;
-    font-weight: 500;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    font-weight: 450;
 }
 
 .bento-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: 270px;
-    gap: 24px;
+    grid-auto-rows: 230px;
+    gap: 20px;
     perspective: 1200px;
 }
 
 .bento-card {
     position: relative;
     overflow: hidden;
-    padding: 40px;
-    border-radius: 30px;
+    padding: 28px 24px;
+    border-radius: 24px;
     transform-style: preserve-3d;
     transition: 0.25s ease;
 }
@@ -670,10 +670,10 @@ footer {
 .bento-card h3 {
     position: relative;
     z-index: 1;
-    margin: 18px 0 16px;
-    font-size: 2.3rem;
-    line-height: 1.1;
-    font-weight: 950;
+    margin: 12px 0 10px;
+    font-size: 1.35rem;
+    line-height: 1.25;
+    font-weight: 850;
 }
 
 .bento-card p,
@@ -689,7 +689,7 @@ footer {
 }
 
 .bento-card.large h3 {
-    font-size: 3.1rem;
+    font-size: 1.7rem;
 }
 
 .bento-card.tall {
@@ -711,10 +711,10 @@ footer {
 }
 
 .mini-btn {
-    margin-top: 26px;
-    padding: 16px 26px;
-    font-size: 1.05rem;
-    font-weight: 900;
+    margin-top: 14px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 800;
 }
 
 .mini-btn:hover,
@@ -725,7 +725,7 @@ footer {
 .product-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
+    gap: 20px;
     perspective: 1200px;
 }
 

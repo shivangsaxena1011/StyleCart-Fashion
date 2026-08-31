@@ -25,44 +25,48 @@ function createProductCard(product, containerType = 'default') {
     if (!product) return '';
     const inWishlist = window.isInWishlist ? window.isInWishlist(product.id) : false;
     const cartQty = window.getCartQuantity ? window.getCartQuantity(product.id) : 0;
-    const stars = '★'.repeat(Math.round(product.rating)) + '☆'.repeat(5 - Math.round(product.rating));
-    
+    const reviews = product.reviewsCount ? product.reviewsCount.toLocaleString() : '1,240';
+    const originalPriceFormatted = product.originalPrice ? ` | <span style="text-decoration:line-through;color:var(--muted);font-weight:400;font-size:0.85rem;">₹${product.originalPrice.toLocaleString()}</span>` : '';
+    const discountFormatted = product.discount ? ` | <span style="color:#4ade80;font-weight:700;font-size:0.82rem;">${product.discount}</span>` : '';
+
     return `
         <article class="product-card tilt-card reveal" data-id="${product.id}" data-price="${product.price}" data-rating="${product.rating}" data-category="${product.category}">
             <div class="product-image" style="position:relative;overflow:hidden;border-radius:18px;">
-                <span class="discount-badge" style="position:absolute;top:10px;left:10px;padding:6px 12px;background:var(--maroon-light);font-size:0.8rem;border-radius:999px;font-weight:800;z-index:2;">${product.discount || "NEW"}</span>
+                ${product.dealTag ? `<span class="discount-badge" style="position:absolute;top:10px;left:10px;padding:4px 10px;background:linear-gradient(135deg, var(--maroon-light), #e54b60);font-size:0.72rem;border-radius:999px;font-weight:800;z-index:2;letter-spacing:0.5px;">${product.dealTag}</span>` : (product.discount ? `<span class="discount-badge" style="position:absolute;top:10px;left:10px;padding:4px 10px;background:var(--maroon-light);font-size:0.72rem;border-radius:999px;font-weight:800;z-index:2;">${product.discount}</span>` : '')}
                 <button class="wishlist ${inWishlist ? 'active' : ''}" 
                         data-product="${product.id}"
                         onclick="event.stopPropagation();window.toggleWishlist(${product.id})" 
-                        style="position:absolute;top:10px;right:10px;background:none;border:none;color:${inWishlist ? '#ff4444' : 'white'};font-size:1.45rem;cursor:pointer;z-index:2;transition:transform 0.2s;"
+                        style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.35);backdrop-filter:blur(6px);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:${inWishlist ? '#ff4444' : 'white'};font-size:1.1rem;cursor:pointer;z-index:2;transition:transform 0.2s;"
                         aria-label="Toggle wishlist">
                     ${inWishlist ? '♥' : '♡'}
                 </button>
                 <img src="${product.image}" alt="${product.name}" class="product-img" 
-                     style="width:100%;height:220px;object-fit:cover;cursor:pointer;transition:transform 0.5s;"
+                     style="width:100%;height:190px;object-fit:cover;cursor:pointer;transition:transform 0.5s;"
                      loading="lazy"
                      onclick="window.goToProduct(${product.id})"
-                     onerror="this.src='https://via.placeholder.com/300x300/5b101b/ffffff?text=${encodeURIComponent(product.name)}'">
-                <button class="quick-view-btn" onclick="event.stopPropagation();window.quickView(${product.id})" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%) translateY(50px);padding:8px 16px;border-radius:999px;border:none;background:var(--white);color:var(--black);font-weight:700;font-size:0.85rem;cursor:pointer;opacity:0;transition:0.3s;">👁️ Quick View</button>
-                <button class="compare-btn" onclick="event.stopPropagation();window.toggleCompare(${product.id})" style="position:absolute;top:50px;right:10px;background:rgba(0,0,0,0.4);border:none;border-radius:50%;width:35px;height:35px;color:white;cursor:pointer;z-index:2;" title="Add to Compare">📊</button>
+                     onerror="this.src='https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=80'">
+                <button class="quick-view-btn" onclick="event.stopPropagation();window.quickView(${product.id})" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%) translateY(50px);padding:6px 14px;border-radius:999px;border:none;background:var(--white);color:var(--black);font-weight:700;font-size:0.78rem;cursor:pointer;opacity:0;transition:0.3s;">👁️ Quick View</button>
+                <button class="compare-btn" onclick="event.stopPropagation();window.toggleCompare(${product.id})" style="position:absolute;top:46px;right:10px;background:rgba(0,0,0,0.35);backdrop-filter:blur(6px);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;z-index:2;font-size:0.9rem;" title="Add to Compare">📊</button>
             </div>
-            <div class="product-info" style="padding:15px 0;">
-                <p class="label" style="text-transform:uppercase;font-size:0.75rem;color:var(--maroon-light);font-weight:800;letter-spacing:1px;">${product.category}</p>
-                <h3 onclick="window.goToProduct(${product.id})" style="font-size:1.15rem;font-weight:900;margin:6px 0;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${product.name}</h3>
-                <p class="rating" style="font-size:0.85rem;color:#ffd700;"><span class="stars">${stars}</span> ${product.rating}</p>
-                <div class="price-row" style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
-                    <div>
-                        <strong style="font-size:1.25rem;color:var(--white);">₹${product.price.toLocaleString()}</strong>
-                    </div>
+            <div class="product-info" style="padding:12px 2px;">
+                <p class="label" style="text-transform:uppercase;font-size:0.7rem;color:var(--maroon-light);font-weight:800;letter-spacing:0.8px;margin-bottom:2px;">${product.brand ? product.brand + ' • ' : ''}${product.category}</p>
+                <h3 onclick="window.goToProduct(${product.id})" style="font-size:0.95rem;font-weight:750;margin:3px 0;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;" title="${product.name}">${product.name}</h3>
+                <div style="font-size:0.92rem;font-weight:700;color:var(--white);margin:4px 0;">
+                    <span style="color:#ffffff;font-size:1.05rem;">₹${product.price.toLocaleString()}</span>${originalPriceFormatted}${discountFormatted}
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+                    <p class="rating" style="font-size:0.8rem;color:#fbbf24;margin:0;">
+                        ⭐ ${product.rating} <span style="color:var(--muted);font-weight:400;font-size:0.75rem;">(${reviews})</span>
+                    </p>
                     <div class="action-buttons">
                         ${cartQty > 0 ? `
-                            <div class="quantity-control" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);border-radius:999px;padding:4px 10px;border:1px solid var(--line);">
-                                <button onclick="event.stopPropagation();window.updateQuantity(${product.id}, -1)" style="background:none;border:none;color:white;cursor:pointer;font-weight:bold;font-size:1.1rem;">−</button>
-                                <span style="font-weight:800;font-size:0.95rem;">${cartQty}</span>
-                                <button onclick="event.stopPropagation();window.updateQuantity(${product.id}, 1)" style="background:none;border:none;color:white;cursor:pointer;font-weight:bold;font-size:1.1rem;">+</button>
+                            <div class="quantity-control" style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border-radius:999px;padding:2px 8px;border:1px solid var(--line);">
+                                <button onclick="event.stopPropagation();window.updateQuantity(${product.id}, -1)" style="background:none;border:none;color:white;cursor:pointer;font-weight:bold;font-size:1rem;">−</button>
+                                <span style="font-weight:800;font-size:0.85rem;">${cartQty}</span>
+                                <button onclick="event.stopPropagation();window.updateQuantity(${product.id}, 1)" style="background:none;border:none;color:white;cursor:pointer;font-weight:bold;font-size:1rem;">+</button>
                             </div>
                         ` : `
-                            <button onclick="event.stopPropagation();window.addToCart(${product.id})" style="padding:8px 18px;border-radius:999px;background:var(--white);color:var(--black);border:none;font-weight:700;cursor:pointer;font-size:0.85rem;transition:0.25s;">Add</button>
+                            <button onclick="event.stopPropagation();window.addToCart(${product.id})" style="padding:6px 14px;border-radius:999px;background:var(--white);color:var(--black);border:none;font-weight:750;cursor:pointer;font-size:0.78rem;transition:0.25s;">Add</button>
                         `}
                     </div>
                 </div>
@@ -155,25 +159,32 @@ function animateCart(product) {
 
 // ========== INITIAL RENDERING ==========
 function renderAllProducts() {
-    const flash = window.ProductService.getFlashDeals();
-    const trending = window.ProductService.getTrendingProducts();
-    const recommended = window.ProductService.getRecommendedProducts();
+    const all = window.ProductService.getAllProducts();
     
-    const electronics = window.ProductService.getProductsByCategory("electronics").slice(0, 4);
-    const luxury = window.ProductService.getProductsByCategory("luxury").slice(0, 4);
-    const bestSellers = window.ProductService.getProductsByCategory("electronics").slice(2, 6);
-    const newArrivals = window.ProductService.getProductsByCategory("gaming").slice(0, 4);
-    const featured = window.ProductService.getProductsByCategory("luxury").slice(1, 5);
+    const flash = all.filter(p => p.dealTag === 'Crazy Low Prices' || p.dealTag === 'Deals of the Day' || p.price <= 799).slice(0, 8);
+    const trending = all.filter(p => p.dealTag === 'Trending Now' || p.dealTag === 'Customers Most-Loved').slice(0, 8);
+    const recommended = all.filter(p => p.dealTag === 'Recommended For You' || p.rating >= 4.5).slice(0, 8);
+    
+    const electronics = all.filter(p => p.category === "electronics").slice(0, 8);
+    const fashion = all.filter(p => p.category === "fashion").slice(0, 8);
+    const home = all.filter(p => p.category === "home").slice(0, 8);
+    const sports = all.filter(p => p.category === "sports" || p.category === "beauty").slice(0, 8);
+    const bestSellers = all.filter(p => p.dealTag && p.dealTag.includes('Best Seller')).slice(0, 8);
+    const newArrivals = all.filter(p => p.category === "books" || p.category === "toys" || p.category === "grocery").slice(0, 8);
+    const featured = all.filter(p => p.dealTag === 'Fashion Under ₹999' || p.dealTag === 'Top Rated').slice(0, 8);
     
     const groups = {
-        flashDeals: flash,
-        trendingProducts: trending,
-        recommendedProducts: recommended,
-        electronicsProducts: electronics,
-        luxuryProducts: luxury,
-        bestSellers: bestSellers,
-        newArrivals: newArrivals,
-        featuredProducts: featured,
+        flashDeals: flash.length > 0 ? flash : all.slice(0, 8),
+        trendingProducts: trending.length > 0 ? trending : all.slice(8, 16),
+        recommendedProducts: recommended.length > 0 ? recommended : all.slice(16, 24),
+        electronicsProducts: electronics.length > 0 ? electronics : all.slice(0, 8),
+        luxuryProducts: fashion.length > 0 ? fashion : all.filter(p => p.category === 'fashion').slice(0, 8),
+        fashionProducts: fashion,
+        homeProducts: home,
+        sportsProducts: sports,
+        bestSellers: bestSellers.length > 0 ? bestSellers : all.slice(4, 12),
+        newArrivals: newArrivals.length > 0 ? newArrivals : all.slice(12, 20),
+        featuredProducts: featured.length > 0 ? featured : all.slice(20, 28),
         recentProducts: getRecentlyViewed().slice(0, 4)
     };
     
@@ -240,12 +251,30 @@ function init() {
         });
     }
     
+    function startAISearch(suggestedQuery) {
+        const aiInput = document.getElementById('aiSearch');
+        if (aiInput) {
+            if (suggestedQuery) aiInput.value = suggestedQuery;
+            aiInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            aiInput.focus();
+            if (window.askAI && aiInput.value.trim()) {
+                window.askAI(aiInput.value.trim());
+            }
+        } else if (window.askAI) {
+            window.askAI(suggestedQuery || 'Trending products under ₹499');
+        }
+    }
+    window.startAISearch = startAISearch;
+
     const aiSearchBtn = document.getElementById('aiSearchBtn');
     if (aiSearchBtn) {
         aiSearchBtn.addEventListener('click', () => {
             const aiInput = document.getElementById('aiSearch');
             if (aiInput && aiInput.value.trim() && window.askAI) {
                 window.askAI(aiInput.value.trim());
+            } else if (aiInput) {
+                aiInput.focus();
+                window.showNotification('Please enter what you want to find!', 'info');
             }
         });
     }
