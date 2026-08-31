@@ -26,48 +26,63 @@ function createProductCard(product, containerType = 'default') {
     const inWishlist = window.isInWishlist ? window.isInWishlist(product.id) : false;
     const cartQty = window.getCartQuantity ? window.getCartQuantity(product.id) : 0;
     const reviews = product.reviewsCount ? product.reviewsCount.toLocaleString() : '1,240';
-    const originalPriceFormatted = product.originalPrice ? ` | <span style="text-decoration:line-through;color:var(--muted);font-weight:400;font-size:0.85rem;">₹${product.originalPrice.toLocaleString()}</span>` : '';
-    const discountFormatted = product.discount ? ` | <span style="color:#4ade80;font-weight:700;font-size:0.82rem;">${product.discount}</span>` : '';
+    const originalPriceFormatted = product.originalPrice ? `<span class="original-price">₹${product.originalPrice.toLocaleString()}</span>` : '';
+    const discountFormatted = product.discount ? `<span class="discount-percent">${product.discount}</span>` : '';
+
+    // Deal badge categorization matching Figma
+    let badgeClass = 'badge-deal';
+    let badgeText = product.dealTag || product.discount || '';
+    const bLower = badgeText.toLowerCase();
+    if (bLower.includes('trend')) badgeClass = 'badge-trending';
+    else if (bLower.includes('editor') || bLower.includes('pick')) badgeClass = 'badge-editor';
+    else if (bLower.includes('best') || bLower.includes('seller')) badgeClass = 'badge-bestseller';
+    else if (bLower.includes('new') || bLower.includes('drop')) badgeClass = 'badge-newdrop';
+
+    const badgeHtml = badgeText ? `<span class="discount-badge ${badgeClass}">${badgeText}</span>` : '';
 
     return `
-        <article class="product-card tilt-card reveal" data-id="${product.id}" data-price="${product.price}" data-rating="${product.rating}" data-category="${product.category}">
-            <div class="product-image" style="position:relative;overflow:hidden;border-radius:18px;">
-                ${product.dealTag ? `<span class="discount-badge" style="position:absolute;top:10px;left:10px;padding:4px 10px;background:linear-gradient(135deg, var(--maroon-light), #e54b60);font-size:0.72rem;border-radius:999px;font-weight:800;z-index:2;letter-spacing:0.5px;">${product.dealTag}</span>` : (product.discount ? `<span class="discount-badge" style="position:absolute;top:10px;left:10px;padding:4px 10px;background:var(--maroon-light);font-size:0.72rem;border-radius:999px;font-weight:800;z-index:2;">${product.discount}</span>` : '')}
+        <article class="product-card tilt-card reveal visible" data-id="${product.id}" data-price="${product.price}" data-rating="${product.rating}" data-category="${product.category}">
+            <div class="product-image">
+                ${badgeHtml}
                 <button class="wishlist ${inWishlist ? 'active' : ''}" 
                         data-product="${product.id}"
                         onclick="event.stopPropagation();window.toggleWishlist(${product.id})" 
-                        style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.35);backdrop-filter:blur(6px);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:${inWishlist ? '#ff4444' : 'white'};font-size:1.1rem;cursor:pointer;z-index:2;transition:transform 0.2s;"
+                        title="Add to wishlist"
                         aria-label="Toggle wishlist">
                     ${inWishlist ? '♥' : '♡'}
                 </button>
                 <img src="${product.image}" alt="${product.name}" class="product-img" 
-                     style="width:100%;height:190px;object-fit:cover;cursor:pointer;transition:transform 0.5s;"
                      loading="lazy"
                      onclick="window.goToProduct(${product.id})"
                      onerror="this.src='https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=80'">
-                <button class="quick-view-btn" onclick="event.stopPropagation();window.quickView(${product.id})" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%) translateY(50px);padding:6px 14px;border-radius:999px;border:none;background:var(--white);color:var(--black);font-weight:700;font-size:0.78rem;cursor:pointer;opacity:0;transition:0.3s;">👁️ Quick View</button>
-                <button class="compare-btn" onclick="event.stopPropagation();window.toggleCompare(${product.id})" style="position:absolute;top:46px;right:10px;background:rgba(0,0,0,0.35);backdrop-filter:blur(6px);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;z-index:2;font-size:0.9rem;" title="Add to Compare">📊</button>
             </div>
-            <div class="product-info" style="padding:12px 2px;">
-                <p class="label" style="text-transform:uppercase;font-size:0.7rem;color:var(--maroon-light);font-weight:800;letter-spacing:0.8px;margin-bottom:2px;">${product.brand ? product.brand + ' • ' : ''}${product.category}</p>
-                <h3 onclick="window.goToProduct(${product.id})" style="font-size:0.95rem;font-weight:750;margin:3px 0;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;" title="${product.name}">${product.name}</h3>
-                <div style="font-size:0.92rem;font-weight:700;color:var(--white);margin:4px 0;">
-                    <span style="color:#ffffff;font-size:1.05rem;">₹${product.price.toLocaleString()}</span>${originalPriceFormatted}${discountFormatted}
+            <div class="product-info">
+                <div>
+                    <p class="card-brand-tag">${product.brand ? product.brand + ' • ' : ''}${product.category}</p>
+                    <h3 onclick="window.goToProduct(${product.id})" title="${product.name}">${product.name}</h3>
                 </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
-                    <p class="rating" style="font-size:0.8rem;color:#fbbf24;margin:0;">
-                        ⭐ ${product.rating} <span style="color:var(--muted);font-weight:400;font-size:0.75rem;">(${reviews})</span>
-                    </p>
+                <div>
+                    <div class="price-row">
+                        <strong>₹${product.price.toLocaleString()}</strong>
+                        ${originalPriceFormatted}
+                        ${discountFormatted}
+                    </div>
+                    <div class="rating">
+                        <span class="stars">★★★★★</span>
+                        <span>${product.rating}</span>
+                        <span style="opacity:0.6;font-size:0.75rem;">(${reviews})</span>
+                    </div>
                     <div class="action-buttons">
                         ${cartQty > 0 ? `
-                            <div class="quantity-control" style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border-radius:999px;padding:2px 8px;border:1px solid var(--line);">
-                                <button onclick="event.stopPropagation();window.updateQuantity(${product.id}, -1)" style="background:none;border:none;color:white;cursor:pointer;font-weight:bold;font-size:1rem;">−</button>
+                            <div class="quantity-control">
+                                <button onclick="event.stopPropagation();window.updateQuantity(${product.id}, -1)">−</button>
                                 <span style="font-weight:800;font-size:0.85rem;">${cartQty}</span>
-                                <button onclick="event.stopPropagation();window.updateQuantity(${product.id}, 1)" style="background:none;border:none;color:white;cursor:pointer;font-weight:bold;font-size:1rem;">+</button>
+                                <button onclick="event.stopPropagation();window.updateQuantity(${product.id}, 1)">+</button>
                             </div>
                         ` : `
-                            <button onclick="event.stopPropagation();window.addToCart(${product.id})" style="padding:6px 14px;border-radius:999px;background:var(--white);color:var(--black);border:none;font-weight:750;cursor:pointer;font-size:0.78rem;transition:0.25s;">Add</button>
+                            <button class="add-to-cart-btn" onclick="event.stopPropagation();window.addToCart(${product.id})">Add to Cart</button>
                         `}
+                        <button class="quick-view-btn" onclick="event.stopPropagation();window.quickView(${product.id})">Quick View</button>
                     </div>
                 </div>
             </div>
@@ -388,6 +403,36 @@ function loadPersonalizedFeed(persona, btnElement) {
     if (window.attachTiltCards) window.attachTiltCards();
 }
 
+// ========== PERSONA FILTER ENGINE (FIGMA AI FASHION FEED) ==========
+function filterByPersona(persona, btnElement) {
+    if (btnElement) {
+        document.querySelectorAll('.persona-pill').forEach(b => b.classList.remove('active'));
+        btnElement.classList.add('active');
+    }
+
+    const grid = document.getElementById('personaProductsGrid');
+    if (!grid) return;
+
+    let matchedProductIds = [];
+    if (persona === 'streetwear') {
+        matchedProductIds = [7, 8, 23, 24, 31, 1, 2, 4];
+    } else if (persona === 'formal') {
+        matchedProductIds = [25, 26, 28, 29, 30, 11, 14, 15];
+    } else if (persona === 'luxury') {
+        matchedProductIds = [11, 19, 21, 32, 28, 30, 20, 22];
+    } else if (persona === 'casual') {
+        matchedProductIds = [25, 27, 33, 31, 3, 5, 8, 9];
+    }
+
+    const all = window.ProductService.getAllProducts();
+    let matches = all.filter(p => matchedProductIds.includes(p.id));
+    if (matches.length === 0) {
+        matches = all.slice(0, 4);
+    }
+    grid.innerHTML = matches.map(p => createProductCard(p, 'persona')).join('');
+    if (window.attachTiltCards) window.attachTiltCards();
+}
+
 // ========== AI IMAGE SEARCH HANDLER (MOCK SCANNED SEARCH) ==========
 async function handleImageSearchUpload(e) {
     const file = e.target.files[0];
@@ -443,7 +488,43 @@ window.quickView = quickView;
 window.animateCart = animateCart;
 window.renderAllProducts = renderAllProducts;
 window.loadPersonalizedFeed = loadPersonalizedFeed;
+window.filterByPersona = filterByPersona;
 window.handleImageSearchUpload = handleImageSearchUpload;
 
 // Auto run init on DOM Content Loaded
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", () => {
+    init();
+
+    // Hook up Hero Search Pill
+    const heroBtn = document.getElementById('heroSearchSubmitBtn');
+    const heroInput = document.getElementById('aiHeroSearchInput');
+    if (heroBtn && heroInput) {
+        heroBtn.addEventListener('click', () => {
+            const query = heroInput.value.trim();
+            if (query) {
+                if (window.startAISearch) {
+                    window.startAISearch(query);
+                } else {
+                    const s = document.getElementById('searchInput');
+                    if (s) { s.value = query; window.performSearch(); }
+                }
+            }
+        });
+        heroInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') heroBtn.click();
+        });
+    }
+
+    const heroVoiceBtn = document.getElementById('heroVoiceSearchBtn');
+    if (heroVoiceBtn) {
+        heroVoiceBtn.addEventListener('click', () => {
+            const voiceBtn = document.getElementById('voiceSearchBtn');
+            if (voiceBtn) voiceBtn.click();
+        });
+    }
+
+    // Initialize Persona Feed with Streetwear
+    setTimeout(() => {
+        filterByPersona('streetwear');
+    }, 450);
+});

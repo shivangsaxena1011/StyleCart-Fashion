@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StyleCart | AI Powered Marketplace</title>
     <meta name="description" content="StyleCart is an AI powered marketplace for smarter product search, comparison, and recommendations.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600;1,700;1,900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#8f1d2d">
+    <meta name="theme-color" content="#08080a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icons/icon-192.svg">
@@ -19,7 +22,10 @@
 
     <nav class="navbar">
         <div class="nav-top-row" style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:20px; flex-wrap:nowrap;">
-            <div class="brand-group"><a href="index.html" class="logo">StyleCart</a><span class="brand-subtitle">Designed and Developed with ❤️ by Shivang Saxena</span></div>
+            <div class="brand-group">
+                <a href="index.html" class="logo"><span class="star-icon">✦</span> StyleCart</a>
+                <span class="brand-subtitle">Designed and Developed with ❤️ by Shivang Saxena</span>
+            </div>
 
             <button class="menu-btn" id="menuBtn" aria-label="Open menu">
                 <span></span>
@@ -39,7 +45,7 @@
                     <option value="electronics">Electronics</option>
                 </select>
                 <div class="search-input-wrapper">
-                    <input type="text" id="searchInput" placeholder="Search products, brands, categories">
+                    <input type="text" id="searchInput" placeholder="Search styles, products, gadgets...">
                     <button type="button" id="voiceSearchBtn" class="search-icon-btn voice" title="Voice Search">🎤</button>
                     <button type="button" id="imageSearchBtn" class="search-icon-btn image" title="Image Search" onclick="document.getElementById('imageSearchModal').style.display='flex'">📸</button>
                 </div>
@@ -47,20 +53,19 @@
             </div>
 
             <div class="nav-actions">
-                <a href="login.html" class="nav-pill">Login</a>
-                <a href="wishlist.html" class="nav-pill">Wishlist <span id="wishlistCount">0</span></a>
-                <a href="orders.html" class="nav-pill">Orders</a>
-                <a href="cart.html" class="cart-btn">Cart <span id="cartCount">0</span></a>
+                <a href="wishlist.html" class="nav-pill" title="Wishlist">♡ <span class="badge-pink" id="wishlistCount">0</span></a>
+                <a href="cart.html" class="cart-btn" title="Cart">🛍️ <span id="cartCount">0</span></a>
+                <a href="login.html" class="nav-pill login-btn-pink">Login</a>
             </div>
         </div>
 
         <div class="nav-links" id="navLinks">
-            <a href="#fashion">Fashion</a>
-            <a href="#electronics">Electronics</a>
-            <a href="#beauty">Beauty</a>
-            <a href="#gaming">Gaming</a>
-            <a href="#luxury">Luxury</a>
-            <a href="ai.html">AI Assistant</a>
+            <a href="#curatedCategories" onclick="filterByCategory('fashion')">Fashion</a>
+            <a href="#curatedCategories" onclick="filterByCategory('electronics')">Electronics</a>
+            <a href="#curatedCategories" onclick="filterByCategory('beauty')">Beauty</a>
+            <a href="#curatedCategories" onclick="filterByCategory('gaming')">Gaming</a>
+            <a href="#curatedCategories" onclick="filterByCategory('luxury')">Luxury</a>
+            <a href="ai.html" class="ai-assistant-link"><span class="pink-dot"></span> AI Assistant</a>
         </div>
     </nav>
 
@@ -77,187 +82,225 @@
     </div>
 
     <main>
+        <!-- HERO SECTION - FIGMA COMPOSITION -->
         <section class="hero">
-            <div class="hero-content spatial-layer" data-depth="18">
-                <p class="eyebrow">AI Powered Marketplace</p>
-                <h1>Shop Smarter With AI</h1>
-                <p class="hero-text">
-                    Search products, compare items, get recommendations instantly, and discover the best deals across fashion, electronics, beauty, gaming, luxury, and more.
+            <div class="hero-left-col">
+                <div class="tag-pill"><span class="pink-dot"></span> AI-POWERED FASHION</div>
+                <h1 class="hero-title">
+                    Fashion<br>
+                    <span class="hero-title-italic">Rewritten</span><br>
+                    By AI.
+                </h1>
+                <p class="hero-desc">
+                    Discover 100K+ curated styles powered by real-time AI recommendations. Your personal stylist, available 24/7.
                 </p>
 
-                <div class="ai-search-panel">
-                    <label for="aiSearch">What are you looking for today?</label>
-                    <div class="ai-search-box">
-                        <input id="aiSearch" type="text" placeholder="Gaming Laptop under ₹70,000">
-                        <button type="button" id="aiSearchBtn">Ask AI</button>
-                    </div>
+                <div class="hero-search-pill">
+                    <span class="search-lens-icon">🔍</span>
+                    <input type="text" id="aiHeroSearchInput" placeholder="Describe your perfect look...">
+                    <button type="button" class="mic-btn" id="heroVoiceSearchBtn" title="Voice Search">🎤</button>
+                    <button type="button" class="search-submit-btn" id="heroSearchSubmitBtn">Search</button>
                 </div>
 
                 <div class="hero-actions">
-                    <a href="#recommended" class="btn primary">Start Shopping</a>
-                    <a href="#ai" class="btn secondary">Try AI Assistant</a>
+                    <a href="#aiPersonaFeed" class="btn-pill-white">Shop Now</a>
+                    <a href="ai_fashion.html" class="btn-pill-glass">Meet Your Stylist →</a>
+                </div>
+            </div>
+
+            <div class="hero-visuals-col">
+                <div class="hero-cards-wrapper">
+                    <div class="couture-card-1">
+                        <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&q=80" alt="Fashion Couture Look 1" loading="lazy">
+                    </div>
+                    <div class="couture-card-2">
+                        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=80" alt="Fashion Couture Look 2" loading="lazy">
+                    </div>
                 </div>
 
-                <div class="trust-row">
-                    <div>
+                <div class="hero-stats-widget">
+                    <div class="stat-item">
                         <strong>100K+</strong>
-                        <span>Products</span>
+                        <span>STYLES</span>
                     </div>
-                    <div>
-                        <strong>AI</strong>
-                        <span>Smart Search</span>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <strong class="stat-pink">AI</strong>
+                        <span>POWERED</span>
                     </div>
-                    <div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
                         <strong>24/7</strong>
-                        <span>Shopping Help</span>
+                        <span>SUPPORT</span>
                     </div>
                 </div>
             </div>
-
-            <div class="hero-stage spatial-layer" data-depth="-14">
-                <canvas id="marketCanvas"></canvas>
-                <div class="floating-tag tag-one">AI Compare</div>
-                <div class="floating-tag tag-two">Best Deals</div>
-                <div class="floating-tag tag-three">Smart Picks</div>
-            </div>
         </section>
 
-        <section class="categories" id="fashion">
-            <div class="section-head">
-                <p class="eyebrow">Shop By Category</p>
-                <h2>Everything you need in one marketplace</h2>
+        <!-- SECTION 2: CURATED CATEGORIES -->
+        <section class="categories" id="curatedCategories" style="max-width:1380px; margin:0 auto; padding:60px 6vw 40px;">
+            <div class="section-head-figma">
+                <h2 class="serif-heading">Every Category, Curated.</h2>
+                <a href="#allProductsSection" class="view-all-link" onclick="window.filterByCategory('all')">View all</a>
             </div>
 
-            <div class="category-grid">
-                <article class="category-card" onclick="filterByCategory('fashion')">
-                    <span>01</span>
-                    <div class="category-icon">👗</div>
-                    <h3>Fashion</h3>
-                    <p>Clothing, footwear, watches, bags, and accessories.</p>
-                </article>
-
-                <article class="category-card" onclick="filterByCategory('mobiles')">
-                    <span>02</span>
-                    <div class="category-icon">📱</div>
-                    <h3>Mobiles</h3>
-                    <p>Latest smartphones, accessories, and smart devices.</p>
-                </article>
-
-                <article class="category-card" onclick="filterByCategory('laptops')">
-                    <span>03</span>
-                    <div class="category-icon">💻</div>
-                    <h3>Laptops</h3>
-                    <p>Work, study, creator, gaming, and premium laptops.</p>
-                </article>
-
-                <article class="category-card" onclick="filterByCategory('beauty')">
-                    <span>04</span>
-                    <div class="category-icon">💄</div>
-                    <h3>Beauty</h3>
-                    <p>Perfumes, skincare, grooming, and beauty essentials.</p>
-                </article>
-
-                <article class="category-card" onclick="filterByCategory('gaming')">
-                    <span>05</span>
-                    <div class="category-icon">🎧</div>
-                    <h3>Gaming</h3>
-                    <p>Headsets, keyboards, consoles, chairs, and accessories.</p>
-                </article>
-
-                <article class="category-card" onclick="filterByCategory('luxury')">
-                    <span>06</span>
-                    <div class="category-icon">⌚</div>
-                    <h3>Luxury</h3>
-                    <p>Premium watches, fashion, perfumes, and lifestyle items.</p>
-                </article>
-
-                <article class="category-card" onclick="filterByCategory('home')">
-                    <span>07</span>
-                    <div class="category-icon">🏠</div>
-                    <h3>Home</h3>
-                    <p>Decor, smart home, kitchen, comfort, and utility items.</p>
-                </article>
-
-                <article class="category-card" onclick="filterByCategory('accessories')">
-                    <span>08</span>
-                    <div class="category-icon">🎒</div>
-                    <h3>Accessories</h3>
-                    <p>Daily essentials, tech add-ons, bags, and lifestyle gear.</p>
-                </article>
-            </div>
-        </section>
-
-        <section class="bento-section" id="ai">
-            <div class="section-head">
-                <p class="eyebrow">StyleCart Intelligence</p>
-                <h2>AI built into the shopping experience</h2>
-            </div>
-
-            <div class="bento-grid">
-                <article class="bento-card large tilt-card">
-                    <span class="card-kicker">AI Product Search</span>
-                    <h3>Find products using natural language</h3>
-                    <p>Search like a real conversation: "best phone under ₹30,000", "wireless earbuds under ₹1999", or "kurtas under ₹500".</p>
-                    <button class="mini-btn" onclick="startAISearch('wireless earbuds under ₹1999')">Search With AI</button>
-                </article>
-
-                <article class="bento-card tall tilt-card">
-                    <span class="card-kicker">AI Comparison</span>
-                    <h3>Compare before buying</h3>
-                    <p>StyleCart helps compare price, rating, features, reviews, and value for money.</p>
-                    <button class="mini-btn" onclick="window.location.href='compare.html'">Compare Products</button>
-                </article>
-
-                <article class="bento-card tilt-card">
-                    <span class="card-kicker">AI Stylist</span>
-                    <h3>Fashion guidance</h3>
-                    <p>Get outfit suggestions for occasions, colors, budget, and personal style.</p>
-                    <button class="mini-btn" onclick="window.location.href='ai.html'">Open Stylist</button>
-                </article>
-
-                <article class="bento-card tilt-card">
-                    <span class="card-kicker">AI Assistant</span>
-                    <h3>Shopping help</h3>
-                    <p>Ask what to buy, what to avoid, and what gives the best value.</p>
-                    <button class="mini-btn" onclick="window.toggleAIAssistant()">Chat With AI</button>
-                </article>
-
-                <article class="bento-card wide tilt-card">
-                    <span class="card-kicker">Marketplace Engine</span>
-                    <h3>Fast browsing, better choices, smarter recommendations</h3>
-                    <p>StyleCart combines marketplace shopping with AI discovery, product suggestions, comparison, wishlist, cart, orders, and admin management.</p>
-                    <button class="mini-btn" onclick="document.getElementById('flash').scrollIntoView({behavior:'smooth'})">Explore Deals</button>
-                </article>
-            </div>
-        </section>
-
-        <!-- My AI Fashion Feed -->
-        <section class="product-section" id="aiHomeFeed" style="display:block; background:linear-gradient(180deg, rgba(143,29,45,0.03) 0%, transparent 100%); padding:40px 0; border-top:1px solid rgba(255,255,255,0.03); margin-bottom:40px;">
-            <div class="section-head">
-                <span class="ai-badge" style="margin-bottom:10px;">PERSONALIZED AI FEED</span>
-                <h2>✨ My AI Fashion Feed</h2>
-                <p>Curated style cards and combinations based on your fashion preferences</p>
-            </div>
-            
-            <div class="ai-feed-container" style="max-width:1200px; margin:0 auto; padding:0 20px;">
-                <div class="ai-profile-quick-select" style="display:flex; justify-content:center; gap:12px; margin-bottom:30px; flex-wrap:wrap;">
-                    <span style="color:var(--muted); align-self:center; font-size:0.9rem;">Style Persona:</span>
-                    <button class="feed-persona-btn active" onclick="loadPersonalizedFeed('streetwear', this)" style="padding:8px 18px; border-radius:99px; border:1px solid var(--maroon-light); background:rgba(143,29,45,0.1); color:white; cursor:pointer;">Urban Streetwear</button>
-                    <button class="feed-persona-btn" onclick="loadPersonalizedFeed('formal', this)" style="padding:8px 18px; border-radius:99px; border:1px solid rgba(255,255,255,0.1); background:none; color:var(--muted); cursor:pointer;">Corporate Formal</button>
-                    <button class="feed-persona-btn" onclick="loadPersonalizedFeed('luxury', this)" style="padding:8px 18px; border-radius:99px; border:1px solid rgba(255,255,255,0.1); background:none; color:var(--muted); cursor:pointer;">Swiss Luxury</button>
-                    <button class="feed-persona-btn" onclick="loadPersonalizedFeed('casual', this)" style="padding:8px 18px; border-radius:99px; border:1px solid rgba(255,255,255,0.1); background:none; color:var(--muted); cursor:pointer;">Smart Casual</button>
-                </div>
-                
-                <div class="ai-feed-content-wrapper" style="display:grid; grid-template-columns:350px 1fr; gap:40px;">
-                    <!-- Persona styling card -->
-                    <div class="ai-persona-card glassmorphism" id="aiPersonaCard" style="padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); text-align:center;">
-                        <!-- Content will load dynamically -->
+            <div class="curated-category-grid">
+                <div class="curated-category-card" onclick="window.filterByCategory('fashion')">
+                    <div class="curated-card-top">
+                        <span class="curated-card-number">01</span>
+                        <span class="curated-card-icon">✦</span>
                     </div>
-                    
-                    <!-- Products matching persona -->
-                    <div class="product-grid" id="aiFeedProducts" style="margin:0; display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:24px;"></div>
+                    <div class="curated-card-body">
+                        <h3>Fashion</h3>
+                        <p>Dresses, Tops & More</p>
+                    </div>
+                </div>
+
+                <div class="curated-category-card" onclick="window.filterByCategory('electronics')">
+                    <div class="curated-card-top">
+                        <span class="curated-card-number">02</span>
+                        <span class="curated-card-icon">◈</span>
+                    </div>
+                    <div class="curated-card-body">
+                        <h3>Electronics</h3>
+                        <p>Phones, Laptops & More</p>
+                    </div>
+                </div>
+
+                <div class="curated-category-card" onclick="window.filterByCategory('beauty')">
+                    <div class="curated-card-top">
+                        <span class="curated-card-number">03</span>
+                        <span class="curated-card-icon">◇</span>
+                    </div>
+                    <div class="curated-card-body">
+                        <h3>Beauty</h3>
+                        <p>Skincare & Makeup</p>
+                    </div>
+                </div>
+
+                <div class="curated-category-card" onclick="window.filterByCategory('gaming')">
+                    <div class="curated-card-top">
+                        <span class="curated-card-number">04</span>
+                        <span class="curated-card-icon">◎</span>
+                    </div>
+                    <div class="curated-card-body">
+                        <h3>Gaming</h3>
+                        <p>Consoles & Accessories</p>
+                    </div>
+                </div>
+
+                <div class="curated-category-card" onclick="window.filterByCategory('luxury')">
+                    <div class="curated-card-top">
+                        <span class="curated-card-number">05</span>
+                        <span class="curated-card-icon">◆</span>
+                    </div>
+                    <div class="curated-card-body">
+                        <h3>Luxury</h3>
+                        <p>Designer & Premium</p>
+                    </div>
+                </div>
+
+                <div class="curated-category-card" onclick="window.filterByCategory('sports')">
+                    <div class="curated-card-top">
+                        <span class="curated-card-number">06</span>
+                        <span class="curated-card-icon">▲</span>
+                    </div>
+                    <div class="curated-card-body">
+                        <h3>Sports</h3>
+                        <p>Activewear & Gear</p>
+                    </div>
+                </div>
+
+                <div class="curated-category-card" onclick="window.filterByCategory('home')">
+                    <div class="curated-card-top">
+                        <span class="curated-card-number">07</span>
+                        <span class="curated-card-icon">■</span>
+                    </div>
+                    <div class="curated-card-body">
+                        <h3>Home</h3>
+                        <p>Décor & Furniture</p>
+                    </div>
+                </div>
+
+                <div class="curated-category-card" onclick="window.filterByCategory('accessories')">
+                    <div class="curated-card-top">
+                        <span class="curated-card-number">08</span>
+                        <span class="curated-card-icon">○</span>
+                    </div>
+                    <div class="curated-card-body">
+                        <h3>Accessories</h3>
+                        <p>Bags, Watches & More</p>
+                    </div>
                 </div>
             </div>
+        </section>
+
+        <!-- SECTION 3: DRESSED BY AI INTELLIGENCE -->
+        <section class="bento-section" id="aiIntelligence" style="max-width:1380px; margin:0 auto; padding:40px 6vw 50px;">
+            <span class="section-tag-pink">INTELLIGENCE</span>
+            <div class="section-head-figma" style="margin-bottom:28px;">
+                <h2 class="serif-heading">Dressed by AI.</h2>
+                <p style="color:var(--muted); max-width:420px; font-size:0.95rem; line-height:1.5;">Four AI tools working in concert to make every shopping decision feel effortless.</p>
+            </div>
+
+            <div class="dressed-ai-grid">
+                <article class="dressed-ai-card">
+                    <span class="dressed-ai-watermark">01</span>
+                    <div class="dressed-ai-btn-wrapper">
+                        <button class="btn-outline-pink" onclick="window.startAISearch('summer streetwear collection under ₹1999')">TRY SEARCH</button>
+                    </div>
+                    <h3>AI Smart Search</h3>
+                    <p>Describe your vibe in plain language — color, occasion, mood — and our AI surfaces the exact look instantly.</p>
+                </article>
+
+                <article class="dressed-ai-card">
+                    <span class="dressed-ai-watermark">02</span>
+                    <div class="dressed-ai-btn-wrapper">
+                        <a href="compare.html" class="btn-outline-pink">COMPARE NOW</a>
+                    </div>
+                    <h3>Style Comparator</h3>
+                    <p>Compare two looks side-by-side on AI-generated renders before committing to a purchase.</p>
+                </article>
+
+                <article class="dressed-ai-card">
+                    <span class="dressed-ai-watermark">03</span>
+                    <div class="dressed-ai-btn-wrapper">
+                        <a href="ai_fashion.html" class="btn-outline-pink">GET STYLED</a>
+                    </div>
+                    <h3>Virtual Stylist</h3>
+                    <p>Upload your photo, get a full wardrobe edit. Recommendations curated precisely for your body and aesthetic.</p>
+                </article>
+
+                <article class="dressed-ai-card">
+                    <span class="dressed-ai-watermark">04</span>
+                    <div class="dressed-ai-btn-wrapper">
+                        <button class="btn-outline-pink" onclick="window.toggleAIAssistant()">CHAT NOW</button>
+                    </div>
+                    <h3>Fashion Assistant</h3>
+                    <p>Sizing, pairing, occasions — our 24/7 AI fashion assistant answers every question, instantly.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- SECTION 4: STYLED FOR YOUR PERSONA (AI FASHION FEED) -->
+        <section class="product-section" id="aiPersonaFeed" style="max-width:1380px; margin:0 auto; padding:40px 6vw 50px;">
+            <span class="section-tag-pink">AI FASHION FEED</span>
+            <div class="section-head-figma">
+                <h2 class="serif-heading">
+                    Styled for<br>
+                    <span class="heading-italic">your persona.</span>
+                </h2>
+                <p style="color:var(--muted); max-width:420px; font-size:0.95rem; line-height:1.5;">Select a style identity — our AI builds the complete wardrobe edit, tailored in real time.</p>
+            </div>
+
+            <div class="persona-pills-bar">
+                <button class="persona-pill active" onclick="window.filterByPersona('streetwear', this)">Urban Streetwear</button>
+                <button class="persona-pill" onclick="window.filterByPersona('formal', this)">Corporate Formal</button>
+                <button class="persona-pill" onclick="window.filterByPersona('luxury', this)">Swiss Luxury</button>
+                <button class="persona-pill" onclick="window.filterByPersona('casual', this)">Smart Casual</button>
+            </div>
+
+            <div class="product-grid" id="personaProductsGrid" style="grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:24px; margin-bottom:50px;"></div>
         </section>
 
         <section class="product-section" id="flash">
@@ -334,9 +377,10 @@
     </main>
 
     <footer>
-        <div>
-            <a href="index.html" class="logo">StyleCart</a>
+        <div class="footer-brand-col">
+            <a href="index.html" class="logo"><span class="star-icon">✦</span> StyleCart</a>
             <p>AI powered marketplace for smarter shopping, better comparison, and personalized product discovery. Designed and Developed by Shivang Saxena</p>
+            <a href="mailto:shivangsaxena102006@gmail.com" class="footer-contact-link">✉ shivangsaxena102006@gmail.com</a>
         </div>
 
         <div class="footer-links">
